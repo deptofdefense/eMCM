@@ -14,11 +14,6 @@ h1 {
 	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
-div {
-	margin-left:15%;
-	margin-bottom: 100px;
-}
-
 p {
 	clear: right;
 	transition: background-color .5s;
@@ -36,8 +31,50 @@ p:hover {
 	border-radius: 4px;
 }
 
+#nav {
+	margin-top: 50px;
+
+}
+
 #mcmlogo {
-	
+
+}
+
+#mcmlogo img {
+	width: 100%;
+	height: auto;
+}
+
+.nav-list {
+	list-style: none;
+	font-family: "Helvetica", sans-serif;
+	font-weight:600;
+	font-size: 16px;
+	color: #323A44;
+	text-align:right;
+}
+
+.nav-list a {
+	color: #323A44;
+}
+
+input#searchbar {
+	background: #FFFFFF;
+	border: 1px solid #979797;
+	border-radius: 5px;
+	width:100%;
+	height: 42px;
+	font-family: "Helvetica", sans-serif;
+	font-weight: 600;
+	font-size: 20px;
+	padding-left: 20px;
+}
+input#searchbar::-webkit-input-placeholder {
+	font-family: "Helvetica", sans-serif;
+	font-weight: 600;
+	font-size: 20px;
+	color: #D8D8D8;
+	padding-left: 20px;
 }
 
 .close {
