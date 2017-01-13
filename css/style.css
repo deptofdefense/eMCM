@@ -1,39 +1,32 @@
+.active {
+	display: block;
+}
+.hide {
+	display: none;
+}
+
 body {
-	font-family: sans-serif;
-}
-
-h1 {
-	background-color: #1a1a1a;
-	color: white;
-	text-align: center;
-	width: 60%;
-	margin-left: 15%;
-	margin-top: 100px;
-	margin-bottom: 100px;
-	border-radius: 10px;
-	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-}
-
-p {
-	clear: right;
-	transition: background-color .5s;
-	font-size: 20px;
+	font-family: "Helvetica", sans-serif;
+	font-weight:200;
+	font-size: 16px;
+	color: #323A44;
 }
 
 a {
-	text-decoration: none;
-	color: white;
-}
-
-p:hover {
-	cursor: pointer;
-	background-color: #808080;
-	border-radius: 4px;
+	font-family: "Helvetica", sans-serif;
+	font-weight:600;
+	font-size: 16px;
+	color: #323A44;
 }
 
 #nav {
 	margin-top: 50px;
 
+}
+
+#browse,#read {
+	width: 100%;
+	height: 1024px;
 }
 
 #mcmlogo {
@@ -52,6 +45,7 @@ p:hover {
 	font-size: 16px;
 	color: #323A44;
 	text-align:right;
+	vertical-align: bottom;
 }
 
 .nav-list a {
@@ -59,6 +53,7 @@ p:hover {
 }
 
 input#searchbar {
+	margin-top: 25px;
 	background: #FFFFFF;
 	border: 1px solid #979797;
 	border-radius: 5px;
@@ -68,6 +63,7 @@ input#searchbar {
 	font-weight: 600;
 	font-size: 20px;
 	padding-left: 20px;
+	vertical-align: bottom;
 }
 input#searchbar::-webkit-input-placeholder {
 	font-family: "Helvetica", sans-serif;
@@ -75,6 +71,46 @@ input#searchbar::-webkit-input-placeholder {
 	font-size: 20px;
 	color: #D8D8D8;
 	padding-left: 20px;
+}
+
+.section-link {
+	border-radius: 0px 10px 10px 0px;
+	transition: background-color 0.5s ease;
+	background: transparent;
+}
+
+.section-link .overlay {
+	position: absolute;
+	left:0; top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+}
+.section-link .overlay h2{
+	margin-top: 0;
+	text-align: right;
+	color: white;
+	padding-right: 20px;
+}
+
+.section-link h2 {
+	font-family: "Helvetica", sans-serif;
+	font-weight: 600;
+	font-size: 20px;
+	padding-left: 20px;
+	z-index: 1;
+}
+.section-link p {
+	padding-left: 80px;
+	font-family: Helvetica;
+	font-size: 16px;
+	color: #000000;
+	z-index: 1;
+}
+
+.section-link:hover > div {
+	background: #B8FFEB;
+	border-radius: 0px 10px 10px 0px;
 }
 
 .close {
@@ -92,55 +128,26 @@ img:hover {
 	cursor: pointer;
 }
 
-#modal {
-	display: none;
-	margin: 0;
-	position: fixed;
-	z-index: 1;
-	left: 0;
-	top: 0;
+.header {
+
+}
+#reader {
+	height: 1024px;
+	overflow-y:auto;
+	overflow-x: hidden;
+}
+.footnote {
 	width: 100%;
-	height: 100%;
-	overflow: auto;
-	background-color: #555;
-	color: white;
+	transition: all 0.5s ease-in-ease-out;
 }
-
-.RCMpopup {
-	display: none;
-	opacity: 0;
-	width: 50%;
-	background-color: #555;
-	color: #fff;
-	text-align: left;
-	border-radius: 10px;
-	position: absolute;
-	z-index: 1;
-	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-	transition: opacity 1s;	
+.footnote h2 {
+	font-size: 16px;
+	font-weight: 600;
+	color: #000000;
 }
-
-.RCMbody {
-	display: none;
-}
-
-.search {
-	width: 60%;
-	height: 100px;
-	font-size: 20px;
-	border-radius: 10px;
-	background-color: #e0e0eb;
-}
-
-button {
-	height: 100px;
-	font-size: 20px;
-	border-radius: 10px;
-	background-color: #1a1a1a;
-	color: white;
-	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-}
-
-button:hover {
-	cursor: pointer;
+.footnote > .cont {
+	padding: 15px;
+	background: #F4F4F4;
+	max-height: 280px;
+	min-height: 30px;
 }
