@@ -1,0 +1,158 @@
+.active {
+	display: block;
+}
+.hide {
+	display: none;
+}
+
+body {
+	font-family: "Helvetica", sans-serif;
+	font-weight:200;
+	font-size: 16px;
+	color: #323A44;
+}
+
+a {
+	font-family: "Helvetica", sans-serif;
+	font-weight:600;
+	font-size: 16px;
+	color: #323A44;
+}
+
+#nav {
+	margin-top: 50px;
+
+}
+
+#browse,#read {
+	width: 100%;
+	height: 1024px;
+}
+
+#mcmlogo {
+
+}
+
+#mcmlogo img {
+	width: 100%;
+	height: auto;
+}
+
+.nav-list {
+	list-style: none;
+	font-family: "Helvetica", sans-serif;
+	font-weight:600;
+	font-size: 16px;
+	color: #323A44;
+	text-align:right;
+	vertical-align: bottom;
+}
+
+.nav-list a {
+	color: #323A44;
+}
+
+input#searchbar {
+	margin-top: 25px;
+	background: #FFFFFF;
+	border: 1px solid #979797;
+	border-radius: 5px;
+	width:100%;
+	height: 42px;
+	font-family: "Helvetica", sans-serif;
+	font-weight: 600;
+	font-size: 20px;
+	padding-left: 20px;
+	vertical-align: bottom;
+}
+input#searchbar::-webkit-input-placeholder {
+	font-family: "Helvetica", sans-serif;
+	font-weight: 600;
+	font-size: 20px;
+	color: #D8D8D8;
+	padding-left: 20px;
+}
+
+.section-link {
+	border-radius: 0px 10px 10px 0px;
+	transition: background-color 0.5s ease;
+	background: transparent;
+}
+
+#primary a {
+	font-weight: inherit;
+}
+
+.section-link .overlay {
+	position: absolute;
+	left:0; top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+}
+.section-link .overlay h2{
+	margin-top: 0;
+	text-align: right;
+	color: white;
+	padding-right: 20px;
+}
+
+.section-link h2 {
+	font-family: "Helvetica", sans-serif;
+	font-weight: 600;
+	font-size: 20px;
+	padding-left: 20px;
+	z-index: 1;
+}
+.section-link p {
+	padding-left: 80px;
+	font-family: Helvetica;
+	font-size: 16px;
+	color: #000000;
+	z-index: 1;
+}
+
+.section-link:hover > div {
+	background: #B8FFEB;
+	border-radius: 0px 10px 10px 0px;
+}
+
+.close {
+	float: right;
+	color: white;
+	font-size: 24px;
+}
+
+.close:hover {
+	color: red;
+	background-color: #555;
+}
+
+img:hover {
+	cursor: pointer;
+}
+
+.header {
+	margin-top: 30px;
+}
+#reader {
+	margin-top: 30px;
+	height: 1024px;
+	overflow-y:auto;
+	overflow-x: hidden;
+}
+.footnote {
+	width: 100%;
+	transition: all 0.5s ease-in-ease-out;
+}
+.footnote h2 {
+	font-size: 16px;
+	font-weight: 600;
+	color: #000000;
+}
+.footnote > .cont {
+	padding: 15px;
+	background: #F4F4F4;
+	max-height: 280px;
+	min-height: 30px;
+}

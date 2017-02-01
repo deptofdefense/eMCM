@@ -1,0 +1,304 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/mercury-paginator/mercury-paginator.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="my-mcm.html">
+
+<dom-module id="my-app2">
+  <template>
+    <style>
+      :host {
+        --app-primary-color: #ddd;
+        --app-secondary-color: #000;
+
+        --mercury-paginator-margin: 0;
+        --mercury-paginator-padding: 0;
+        
+        --app-toolbar-font-size: 2em;
+
+        display: block;
+      }
+
+      app-header {
+        color: #000;
+        background-color: var(--app-primary-color);
+      }
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+      app-header-layout {
+        margin:0.5em;
+      }
+
+      app-toolbar input {
+          width:100%;
+          font-size: 1em;
+          margin: 1em 1em 1em 1em;
+      }
+	  /*
+      app-toolbar input:focus {
+          position:absolute;
+          width:80%;
+          height:2em;
+          margin: 0em 0em 0em 0em;
+      }
+	  */
+
+      .drawer-list a {
+        display: block;
+        padding: 0 16px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+        border-top: solid;
+        border-width: 1px;
+        line-height: 40px;
+      }
+
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: bold;
+      }
+      paper-toggle-button {
+          margin-left:5em;
+      }
+      :host {
+          --app-drawer-width: 300px;
+      }
+      .main-title {
+          color:#000;
+          pointer-events:auto;
+          text-decoration:none;
+      }
+    </style>
+
+    <app-drawer-layout responsive-width="1000px" fullbleed>
+      <!-- Drawer content -->
+      <app-drawer hidden=true id="drawer" align="right" class="footnote">
+        <app-toolbar>
+            Details for this rule:
+        </app-toolbar>
+            <h2>Analysis!</h2>
+            <div>{{analysis}}</div>
+            <h2>Discussion!</h2>
+            <div>{{discussion}}</div>
+      </app-drawer>
+
+      <div id="browse active" hidden$="{{hide}}">
+			<div id="nav" class="container">
+				<div class="row">
+					<div id="mcmlogo" class="col-sm-3 col-md-offset-2">
+						<img src="../img/logo.png" alt="Electronic Manual for Court Martial" />
+					</div>
+					<!-- <div class="search">
+						<div class="col-md-3">
+							<input id="searchbar" placeholder="Start typing to search">
+						</div>
+					</div> -->
+					<div id="links" class="col-md-2 col-md-offset-3">
+						<ul class="nav-list">
+							<li><a href="https://github.com/deptofdefense/mcm">MCM on Github</a></li>
+							<li><a href="#">Download PDF</a></li>
+							<li><a href="about.html">About eMCM</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+                        <input autofocus id="searchbar" placeholder="Start typing to search" is="iron-input" value="{{search::input}}" type=search></input>
+					</div>
+				</div>
+			</div>
+            <div id="primary" class="container">
+                <iron-selector hidden$="{{hide}}"
+                    selected="[[page]]" attr-for-selected="name">
+
+                        <template id="items" is="dom-repeat" items="{{output}}">
+                            <a name="{{item.ref}}" href="/#{{item.ref}}">
+                            <div class="section-link row">
+                                <div class="col-md-8 col-md-offset-2">
+                                    <h2>
+                                        {{item.title}}
+                                    </h2>
+                                    <p>Quisque ipsum massa, egestas ut egestas ac, finibus sit amet quam. Phasellus luctus et magna vitae egestas. Pellentesque lobortis eget magna non lobortis.</p>
+                                    <div class="overlay ">
+                                        <h2 class="callout">Explore Section</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            </a>
+                        </template>
+                </iron-selector>
+			</div>
+		</div>
+        <div id="read" hidden$="{{!hide}}">
+			<div id="nav" class="container">
+				<div class="row">
+					<div id="mcmlogo" class="col-sm-3">
+						<img src="../img/logo.png" alt="Electronic Manual for Court Martial" />
+					</div>
+					<div class="search">
+						<div class="col-md-7">
+                            <input autofocus id="searchbar" placeholder="Start typing to search" is="iron-input" value="{{search::rich_input}}" type=search></input>
+						</div>
+					</div>
+					<div id="links" class="col-md-2">
+						<ul class="nav-list">
+							<li><a href="https://github.com/deptofdefense/mcm">MCM on Github</a></li>
+							<li><a href="#">Download PDF</a></li>
+							<li><a href="about.html">About eMCM</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="primary" class="container">
+				<div class="row">
+					<div class="header">
+						<a href="#">&lt; Chapter 1: 700 Thing</a>
+					</div>
+					<div id="reader" class="col-md-8">
+                        <div hidden$="{{!hide}}" id="data"></div>
+					</div>
+					<div id="footnote" class="col-md-4">
+						<div id="disc" class="footnote">
+							<h2>Discussion</h2>
+							<div class="cont">
+								No footnote found.<br>
+								<a href="#">Request or add on Github</a>
+							</div>
+						</div>
+						<div id="foot" class="footnote">
+							<h2>Footnote</h2>
+							<div class="cont">
+								No footnote found.<br>
+								<a href="#">Request or add on Github</a>
+							</div>
+						</div>
+						<div id="annot" class="footnote">
+							<h2>Annotation</h2>
+							<div class="cont">								No footnote found.<br>
+								<a href="#">Request or add on Github</a></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+    <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="mcm">
+        <my-mcm name="mcm" dom="{{dom}}" search="[[search]]" output="{{output}}" index="{{index}}" selected="[[hash]]">Loading... TODO</my-mcm>
+        <my-view404 name="view404">Error</my-view404>
+    </iron-pages>
+
+    <app-location route="{{hash}}"></app-location>
+    <app-location route="{{route}}" use-hash-as-path></app-location>
+
+    <app-route id="router"
+        route="{{route}}"
+        pattern=":page"
+        data="{{routeD}}"
+        tail="{{subrouteD}}"
+        active="{{active}}"></app-route>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-app2',
+      ready: function(){
+          a=this;
+      },
+      _reloadDB: function (){
+            var req =indexedDB.deleteDatabase('app-mirror');
+            req.onsuccess = function () {
+                console.log('Deleted database successfully'); };
+            req.onerror = function () {
+                console.log('Could not delete database');
+                return;};
+            req.onblocked = function () {
+                console.log('Delete database operation blocked.');
+                return;};
+            if(!caches){return;};
+            caches.keys()
+                .then(function(cacheNames) {
+                    return Promise.all(
+                        cacheNames.map(function(cacheName) {
+                            return
+                caches.delete(cacheName);
+                        })); });
+      },
+      _getDom: function(r1,active,dom){
+          var search = r1.page;
+          var el = active && dom.getElementById(search);
+          if(!el){this.hide=false;return;}
+          var myNode = this.$["data"];
+          myNode.innerHTML='';
+          this.hide=true;
+          var el=el.cloneNode(true);
+          var d = Polymer.dom(this.$["data"])
+          var elCh = el.querySelectorAll(":scope > section");
+          if (!search.startsWith("rule") && !search.startsWith("article") && (el.classList.contains("level1")  || elCh.length!=0)){
+              elCh = Array.prototype.slice.call(elCh);
+              elCh.forEach(function(e){
+                  var e2 = e.children[0].cloneNode(true);
+                  var a = document.createElement("a");
+                  a.setAttribute("href","#" + e.getAttribute("id"));
+                  a.appendChild(e2)
+                  d.appendChild(a);
+              });
+          } else {
+              d.appendChild(el);
+          }
+          el.querySelectorAll("nav");
+      },
+      properties: {
+        routeD : {type:Object},
+        page: {
+          type: String,
+          observer: '_pageChanged',
+        },
+        hash: {
+          type: String,
+        },
+      },
+      observers: [
+        '_getDom(routeD,active,dom)',
+        '_resetPage(output)',
+      ],
+
+      _showPage404: function() {
+        this.page = 'view404';
+      },
+      _resetPage: function(output){
+          if(output.length==0 || output[0].title=="Loading index..."){return;}
+          window.location.hash="";
+          var myNode = this.$["data"];
+          myNode.innerHTML='';
+          this.hide = false;
+          this.currentResultPage=0;
+      }
+
+    });
+  </script>
+</dom-module>

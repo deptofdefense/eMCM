@@ -1,0 +1,184 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<script src="../bower_components/elasticlunr.js/elasticlunr.js"></script>
+<dom-module id="my-mcm">
+<template>
+<div id="target"></div>
+<style>
+@keyframes pulse {
+    0% { opacity: 0.1 }
+    50% { opacity: 0.5 }
+    100% { opacity: 1 }
+}
+
+:host > *.target {
+    display: block;
+    animation: pulse 0.3s linear 0s;
+}
+
+</style>
+<!-- <link rel="import" href="raw-mcm.html"> -->
+<app-indexeddb-mirror log
+    key="mcm"
+    data="{{_toJSON(raw_index)}}"
+    persisted-data="{{index_p}}">
+</app-indexeddb-mirror>
+</template>
+<script>
+Polymer({
+    is: 'my-mcm',
+    observers: [
+            "doSearch(search,dom,index)"
+                ],
+    _toJSON : function(e){
+        r=e.toJSON();
+        r.refMap=e.refMap;
+        return r
+    },
+    _fromJSON : function(e){
+        r=elasticlunr.Index.load(e);
+        this.refMap = e.refMap;
+        return r;
+    },
+    properties: {
+        raw_index: {
+            type: Object,
+            readOnly: false
+        },
+        index: {
+            type: Object,
+            readOnly: false,
+            notify: true,
+            computed: '_fromJSON(index_p)'
+        },
+        selected: {
+            type: String,
+            notify: false,
+        },
+        selectedPast: {
+            type: Object,
+            value: ""
+        },
+        dom: {
+            type: Object,
+            notify: true
+        },
+        search: {
+            type: String,
+        },
+        output: {
+            type: Array,
+            notify: true,
+            value: [{title:"Loading index...",ref:""}],
+        },
+        refMap: {
+            type: Object,
+            value: {}
+        }
+    },
+    doSearch: function(search,dom,index){
+        var res = index.search(search);
+        var _this = this;
+        this.output = [];
+        res.forEach(function(e){
+            e.ref = _this.refMap[e.ref];
+            var el = dom.getElementById(e.ref);
+            _this.push("output",{title:el.children[0].textContent,ref:e.ref});
+        });
+        var o = this.output;
+        this.output = [];
+        this.output = o;
+    },
+
+    ready: function() {
+        this.importHref("/src/raw-mcm.html",function(e){
+            console.log("imported raw");
+            this.dom = e.target.import;
+            var _this = this;
+            var _data = [];
+
+            function createIndex(){
+                console.log("Building Index");
+                var res = Polymer.dom(_this.dom).querySelectorAll('section.level2');
+                var worker = new Worker("src/service-indexer.js");
+                worker.onmessage = function (e) {
+                     worker.terminate();
+                     if (_this.index){console.log("early index available");
+                         _this.output = [];
+                         console.log(_this);return;}
+                     _data = elasticlunr.Index.load(JSON.parse(e.data))
+                     _data.refMap = _this.refMap;
+                     _this.output = [];
+                     _this.raw_index = _data;
+                }
+                res.forEach(function(e){
+                    if (_this.index){worker.terminate();console.log("really early index available" + e);return false;}
+                    var id = e.getAttribute("id")
+                    var id2 = Object.keys(_this.refMap).length;
+                    _this.refMap[id2]=id;
+                    var title = Polymer.dom(e).children[0].textContent;
+                    var body = Polymer.dom(e).textContent;
+                    worker.postMessage({
+                        title : title,
+                        body : body,
+                        ref : id2,
+                    });
+                });
+                worker.postMessage("done");
+            }
+
+            console.log("opening app-mirror");
+            request = indexedDB.open("app-mirror");
+            request.onerror =
+                function(evt){
+                console.log("failed");
+                createIndex();
+                return;
+            }
+            request.onblocked =
+                function(evt){
+                console.log("failed");
+                createIndex();
+                return;
+            }
+            request.onupgradneeded =
+                function(evt){
+                console.log("failed");
+                createIndex();
+                return;
+            }
+            console.log("waiting for request return");
+            request.onerror = function(evt){
+                console.log("request fail");
+                console.log(evt);
+                createIndex();
+            };
+            request.onsuccess = (function(evt){
+                console.log("request success");
+                db = this.result;
+                console.log(db);
+                if (!db.objectStoreNames.contains("mirrored_data")){
+                    console.log("no object store");
+                    createIndex();
+                } else {
+                    request3=db.transaction("mirrored_data").objectStore("mirrored_data").get("mcm")
+                    request3.onerror = function(evt){
+                        console.log("request fail");
+                        console.log(evt);
+                        createIndex();
+                    };
+                    request3.onsuccess = function(e){
+                        console.log("request3 success");
+                        if (!e.target.result){
+                            createIndex();return;}
+                        _this.index_p = e.target.result;
+                        _this.output = [];
+                    };
+                }
+            });
+
+        });
+    }
+});
+</script>
+</dom-module>

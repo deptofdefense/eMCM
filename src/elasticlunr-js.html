@@ -1,0 +1,173 @@
+<script rel="import" src="../bower_components/elasticlunr.js/elasticlunr.min.js"></script>
+<script>
+/**
+ *  To use 
+ * ```
+ * <lunr-js
+ *   data="{{data}}"
+ *   search="{{search}}"
+ *   output="{{output}}" >
+ * </lunr-js>
+ * ```
+ * 
+ * @demo
+ */
+Polymer({
+  is: 'elasticlunr-js',
+  properties: {
+    /** The data that you'd like to be searched. */
+    data: {type: Array},
+    /** The search term that filters results. */
+    search: String,
+    debounceing: {
+      computed: 'debounceInput(search)'
+    },
+    _search: {value:""},
+    /** The filtered data. */
+    output: {computed: 'searched(data.*, _search, index, minScore, limit)', notify: true},
+    /** If no Stop Words (no-stop-words)*/
+    noStopWords: {type:Boolean, value:false},
+    /** The lunr Index. */
+    index: {computed: 'makeIndex(data, _fields, noStopWords, _index)'},
+    /** The fields to be searched. */
+    fields: {type: Array, value: []},
+    /** Set fields to be searched. */
+    _index: {computed: '_setFields(data, fields, saveDoc)'},
+    /** The maximum number of results you'd like your output. */
+    limit: {type: Number, value: 500},
+    /** The minimum score of your results. from 0 to 1 */
+    minScore: {type: Number, value: 0},
+    /** Whether you would like console.log output. */
+    log: Boolean,
+    /** Whether you would like to save the documents */
+    saveDoc: {type: Boolean, value: false}
+  },
+  
+  debounceInput: function(data){
+    this.debounce("setInput", this.setInput, 200)
+  },
+  setInput: function(){
+    this._search = this.search
+  },
+  /**
+    Filters your input data
+    
+    @param {Array} data Array of Objects with common properties.
+    @param {String} search The search term that filters results.
+    @param {Object} index The lunr Index..
+    @param {Number} minScore The minimum score of your results.
+    @param {Number} limit The maximum number of results you'd like your output.
+    
+    @return {Array} The filtered data.
+   */
+  searched: function (data, search, index, minScore, limit) { if (data.base) {
+    var output = []
+    if (""+search !== "") {
+      var searched = index.search(search,{expand: true});
+      for (var i = 0; i < searched.length; i++) {
+        if (i === limit || searched[i].score < minScore) { break }
+        output.push(data.base[searched[i].ref])
+      }
+    }
+    if (output.length === 0 && !this.noStopWords && ""+search !== "") {
+      if (!this.indexNoStopWords) {
+        this.indexNoStopWords = this.makeIndex(data, this._fields, true, index)
+      }
+      searched = this.indexNoStopWords.search(search)
+      var output = []
+      for (var i = 0; i < searched.length; i++) {
+        if (i === limit || searched[i].score < minScore) { break }
+        output.push(data.base[searched[i].ref])
+      }
+    }
+    return output
+  }},
+  _setFields: function(data, fields, saveDoc) {
+    var thatLunrJs = this
+    if (Array.isArray(data) && data.length >= 0) {
+      if (Array.isArray(fields) && fields.length > 0) {
+        this._fields = fields
+        return elasticlunr(function () {
+          this.saveDocument(saveDoc);
+          for (var i = 0; i < fields.length; i++) {
+            if (fields[i].charAt(0) === fields[i].charAt(0).toUpperCase()) {
+              this.addField(fields[i], { boost: 10 })
+            } else {
+              this.addField(fields[i])
+            }
+          }
+        })
+      
+      } else {
+        // find fields
+        // TODO only word best fields.
+        var fields = []
+        var ddup = {}
+        return elasticlunr(function () {
+          this.saveDocument(saveDoc);
+          for (var indexOfData = 0; indexOfData < data.length; indexOfData++) {
+            for (var prop in data[indexOfData]) {
+              if (prop.charAt(0) !== "_" && !ddup.hasOwnProperty(prop) && 
+                 (prop.toString().split(' ').length > 2 || prop.toString().length < 30)) {
+                fields.push(prop)
+                if (prop.charAt(0) === prop.charAt(0).toUpperCase()) {
+                  this.addField(prop, { boost: 10 })
+                } else {
+                  this.addField(prop)
+                }
+                ddup[prop] = 1
+              }
+            }
+          }
+          if (fields.length > 0) {
+            thatLunrJs._fields = fields
+          }
+        })
+      }
+    }
+  },
+  /**
+    Makes the Index of the data
+    
+    @param {Array} data Array of Objects with common properties.
+    @param {Array} fields Optional Array of strings of common properties 
+      to be indexed
+    @return {Object} The lunr index.
+   */
+  makeIndex: function (data, fields, noStopWords, index) {
+    if (data && data !== null) {
+      // TODO availability of importing a already prepared index
+
+      if (this.log) {
+        var start = performance.now()
+      }
+
+      for (var i = 0; i < data.length; i++) {
+        var toIndex = {id: i}
+        for (var f = 0;f < fields.length; f++) {
+          if (data[i].hasOwnProperty(fields[f]) && data[i][fields[f]] !== null && 
+             typeof data[i][fields[f]].toString == 'function' &&
+             (data[i][fields[f]].toString().split(' ').length > 2 || data[i][fields[f]].toString().length < 30)
+             ) { //indicate that they might be words in it
+            toIndex[fields[f]] = data[i][fields[f]].toString()
+          } else {
+            toIndex[fields[f]] = ""
+          }
+        }
+        index.addDoc(toIndex)
+      }
+      if (this.log) {
+        var time = performance.now() - start
+        var size = JSON.stringify(index).length
+        console.log('Make Index Time', time)
+        console.log('Network size index', size)
+      }
+      if (noStopWords) {
+        index.pipeline.remove(elasticlunr.stopWordFilter)
+      }
+      return index
+    }
+  }
+})
+
+</script>
