@@ -105,28 +105,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div>{{discussion}}</div>
       </app-drawer>
 
-      <div id="browse active" hidden$="{{hide}}">
+      <div id="browse active">
 			<div id="nav" class="container">
 				<div class="row">
-					<div id="mcmlogo" class="col-sm-3 col-md-offset-2">
+					<div id="mcmlogo" class="col-sm-3">
 						<img src="../img/logo.png" alt="Electronic Manual for Court Martial" />
 					</div>
-					<!-- <div class="search">
-						<div class="col-md-3">
-							<input id="searchbar" placeholder="Start typing to search">
-						</div>
-					</div> -->
-					<div id="links" class="col-md-2 col-md-offset-3">
+					<div class="col-md-7">
+                        <input autofocus id="searchbar" placeholder="Start typing to search" is="iron-input" value="{{search::input}}" type=search></input>
+					</div>
+					<div id="links" class="col-md-2">
 						<ul class="nav-list">
 							<li><a href="https://github.com/deptofdefense/mcm">MCM on Github</a></li>
 							<li><a href="#">Download PDF</a></li>
 							<li><a href="about.html">About eMCM</a></li>
 						</ul>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-8 col-md-offset-2">
-                        <input autofocus id="searchbar" placeholder="Start typing to search" is="iron-input" value="{{search::input}}" type=search></input>
 					</div>
 				</div>
 			</div>
@@ -153,25 +146,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 			</div>
 		</div>
         <div id="read" hidden$="{{!hide}}">
-			<div id="nav" class="container">
-				<div class="row">
-					<div id="mcmlogo" class="col-sm-3">
-						<img src="../img/logo.png" alt="Electronic Manual for Court Martial" />
-					</div>
-					<div class="search">
-						<div class="col-md-7">
-                            <input autofocus id="searchbar" placeholder="Start typing to search" is="iron-input" value="{{search::rich_input}}" type=search></input>
-						</div>
-					</div>
-					<div id="links" class="col-md-2">
-						<ul class="nav-list">
-							<li><a href="https://github.com/deptofdefense/mcm">MCM on Github</a></li>
-							<li><a href="#">Download PDF</a></li>
-							<li><a href="about.html">About eMCM</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
 			<div id="primary" class="container">
 				<div class="row">
 					<div class="header">

@@ -20,7 +20,10 @@ module.exports = {
     '/src/service-indexer.js',
     '/src/raw-mcm.html',
     '/src/my-mcm.html',
-    '/src/my-app.html'
+    '/src/my-app.html',
+	'/css/styles.css',
+	'/css/bootstrap.min.css',
+	'/img/**'
   ],
   navigateFallback: 'index.html',
   maximumFileSizeToCacheInBytes : 6097152
