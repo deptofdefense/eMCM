@@ -132,9 +132,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <div class="section-link row">
                                 <div class="col-md-8 col-md-offset-2">
                                     <h2>
-                                        {{item.title}}
+                                        {{item.parent}} - {{item.title}}
                                     </h2>
-                                    <p>Quisque ipsum massa, egestas ut egestas ac, finibus sit amet quam. Phasellus luctus et magna vitae egestas. Pellentesque lobortis eget magna non lobortis.</p>
+                                    <p>
+									{{item.body}}
+                                    </p>
                                     <div class="overlay ">
                                         <h2 class="callout">Explore Section</h2>
                                     </div>
@@ -203,6 +205,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ready: function(){
           a=this;
       },
+	  log: function(a){
+		  console.log(a)
+	  },
       _reloadDB: function (){
             var req =indexedDB.deleteDatabase('app-mirror');
             req.onsuccess = function () {

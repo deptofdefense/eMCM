@@ -83,7 +83,10 @@ Polymer({
         res.forEach(function(e){
             e.ref = _this.refMap[e.ref];
             var el = dom.getElementById(e.ref);
-            _this.push("output",{title:el.children[0].textContent,ref:e.ref});
+            _this.push("output",{title:el.children[0].textContent,
+                                body:el.children[1].textContent.slice(0,100),
+                                parent:el.parentNode.children[0].textContent,
+                                ref:e.ref});
         });
         var o = this.output;
         this.output = [];
