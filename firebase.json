@@ -7,7 +7,7 @@
         "destination": "/bower_components/app-storage/app-indexeddb-mirror/common-worker-scope.js"
       },
       {
-        "source": "**/!(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
+        "source": "**/!(*.js|*.html|*.css|*.svg|*.png|*.jpg|*.jpeg)",
         "destination": "/index.html"
       }
     

@@ -3,7 +3,6 @@
 <script src="../bower_components/elasticlunr.js/elasticlunr.js"></script>
 <dom-module id="my-mcm">
 <template>
-<div id="target"></div>
 <style>
 @keyframes pulse {
     0% { opacity: 0.1 }
@@ -18,6 +17,7 @@
 
 </style>
 <!-- <link rel="import" href="raw-mcm.html"> -->
+<div id="target"></div>
 <app-indexeddb-mirror log
     key="mcm"
     data="{{_toJSON(raw_index)}}"

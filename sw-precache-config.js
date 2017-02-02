@@ -25,6 +25,5 @@ module.exports = {
 	'/css/bootstrap.min.css',
 	'/img/**'
   ],
-  navigateFallback: 'index.html',
   maximumFileSizeToCacheInBytes : 6097152
 };

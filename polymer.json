@@ -6,6 +6,7 @@
     "src/my-mcm.html"
   ],
   "sources": [
+    "manifest.json",
     "src/**",
     "css/**",
     "img/**/*",
@@ -21,5 +22,10 @@
     "bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-client.html",
     "bower_components/app-storage/app-indexeddb-mirror/common-worker.html",
     "bower_components/app-storage/app-indexeddb-mirror/common-worker-scope.js"
+  ],
+  "includeDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js",
+    "bower_components/webcomponentsjs/webcomponents-lite.js"
   ]
 }

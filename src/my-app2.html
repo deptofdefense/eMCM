@@ -57,14 +57,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           font-size: 1em;
           margin: 1em 1em 1em 1em;
       }
-	  /*
+      /*
       app-toolbar input:focus {
           position:absolute;
           width:80%;
           height:2em;
           margin: 0em 0em 0em 0em;
       }
-	  */
+      */
 
       .drawer-list a {
         display: block;
@@ -106,23 +106,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </app-drawer>
 
       <div id="browse active">
-			<div id="nav" class="container">
-				<div class="row">
-					<div id="mcmlogo" class="col-sm-3">
-						<img src="../img/logo.png" alt="Electronic Manual for Court Martial" />
-					</div>
-					<div class="col-md-7">
+            <div id="nav" class="container">
+                <div class="row">
+                    <div id="mcmlogo" class="col-sm-3">
+                        <img src="../img/logo.png" alt="Electronic Manual for Court Martial" />
+                    </div>
+                    <div class="col-md-7">
                         <input autofocus id="searchbar" placeholder="Start typing to search" is="iron-input" value="{{search::input}}" type=search></input>
-					</div>
-					<div id="links" class="col-md-2">
-						<ul class="nav-list">
-							<li><a href="https://github.com/deptofdefense/mcm">MCM on Github</a></li>
-							<li><a href="#">Download PDF</a></li>
-							<li><a href="about.html">About eMCM</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
+                    </div>
+                    <div id="links" class="col-md-2">
+                        <ul class="nav-list">
+                            <li><a href="https://github.com/deptofdefense/mcm">MCM on Github</a></li>
+                            <li><a href="#">Download PDF</a></li>
+                            <li><a href="about.html">About eMCM</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
             <div id="primary" class="container">
                 <iron-selector hidden$="{{hide}}"
                     selected="[[page]]" attr-for-selected="name">
@@ -135,7 +135,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                         {{item.parent}} - {{item.title}}
                                     </h2>
                                     <p>
-									{{item.body}}
+                                    {{item.body}}
                                     </p>
                                     <div class="overlay ">
                                         <h2 class="callout">Explore Section</h2>
@@ -145,47 +145,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             </a>
                         </template>
                 </iron-selector>
-			</div>
-		</div>
+            </div>
+        </div>
         <div id="read" hidden$="{{!hide}}">
-			<div id="primary" class="container">
-				<div class="row">
-					<div class="header">
-						<a href="#">&lt; Chapter 1: 700 Thing</a>
-					</div>
-					<div id="reader" class="col-md-8">
+            <div id="primary" class="container">
+                <div class="row">
+                    <div class="header">
+                        <a href="#">&lt; Chapter 1: 700 Thing</a>
+                    </div>
+                    <div id="reader" class="col-md-8">
                         <div hidden$="{{!hide}}" id="data"></div>
-					</div>
-					<div id="footnote" class="col-md-4">
-						<div id="disc" class="footnote">
-							<h2>Discussion</h2>
-							<div class="cont">
-								No footnote found.<br>
-								<a href="#">Request or add on Github</a>
-							</div>
-						</div>
-						<div id="foot" class="footnote">
-							<h2>Footnote</h2>
-							<div class="cont">
-								No footnote found.<br>
-								<a href="#">Request or add on Github</a>
-							</div>
-						</div>
-						<div id="annot" class="footnote">
-							<h2>Annotation</h2>
-							<div class="cont">								No footnote found.<br>
-								<a href="#">Request or add on Github</a></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+                        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="mcm">
+                            <my-mcm name="mcm" dom="{{dom}}" search="[[search]]" output="{{output}}" index="{{index}}" selected="[[hash]]">Loading...</my-mcm>
+                            <my-view404 name="view404">Error</my-view404>
+                        </iron-pages>
 
-
-    <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="mcm">
-        <my-mcm name="mcm" dom="{{dom}}" search="[[search]]" output="{{output}}" index="{{index}}" selected="[[hash]]">Loading... TODO</my-mcm>
-        <my-view404 name="view404">Error</my-view404>
-    </iron-pages>
+                    </div>
+                    <div id="footnote" class="col-md-4">
+                        <div id="disc" class="footnote">
+                            <h2>Discussion</h2>
+                            <div class="cont">
+                                No footnote found.<br>
+                                <a href="#">Request or add on Github</a>
+                            </div>
+                        </div>
+                        <div id="foot" class="footnote">
+                            <h2>Footnote</h2>
+                            <div class="cont">
+                                No footnote found.<br>
+                                <a href="#">Request or add on Github</a>
+                            </div>
+                        </div>
+                        <div id="annot" class="footnote">
+                            <h2>Annotation</h2>
+                            <div class="cont">
+                                No footnote found.<br>
+                                <a href="#">Request or add on Github</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <app-location route="{{hash}}"></app-location>
     <app-location route="{{route}}" use-hash-as-path></app-location>
@@ -205,9 +205,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ready: function(){
           a=this;
       },
-	  log: function(a){
-		  console.log(a)
-	  },
+      log: function(a){
+          console.log(a)
+      },
       _reloadDB: function (){
             var req =indexedDB.deleteDatabase('app-mirror');
             req.onsuccess = function () {
