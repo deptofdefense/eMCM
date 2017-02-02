@@ -16,8 +16,44 @@
 }
 
 </style>
-<!-- <link rel="import" href="raw-mcm.html"> -->
-<div id="target"></div>
+<template id="items" is="dom-repeat" items="{{output}}">
+    <a name="{{item.ref}}" href="/#{{item.ref}}">
+    <div class="section-link row">
+        <div class="col-md-8 col-md-offset-2">
+            <h2>{{item.parent}} - {{item.title}}</h2>
+            <p>{{item.body}}</p>
+            <div class="overlay ">
+                <h2 class="callout">Explore Section</h2>
+            </div>
+        </div>
+    </div>
+    </a>
+</template>
+<div id="reader" class="col-md-8">
+    <div id="data2"></div>
+</div>
+<div id="footnote" class="col-md-4" hidden$="{{hide}}">
+    <div id="disc" class="footnote">
+        <h2>Discussion</h2>
+        <div class="cont">
+            No footnote found.<br>
+            <a href="#">Request or add on Github</a>
+        </div>
+    </div>
+    <div id="foot" class="footnote">
+        <h2>Footnote</h2>
+        <div class="cont">
+            No footnote found.<br>
+            <a href="#">Request or add on Github</a>
+        </div>
+    </div>
+    <div id="annot" class="footnote">
+        <h2>Annotation</h2>
+        <div class="cont">
+            No footnote found.<br>
+            <a href="#">Request or add on Github</a></div>
+    </div>
+</div>
 <app-indexeddb-mirror log
     key="mcm"
     data="{{_toJSON(raw_index)}}"
@@ -26,71 +62,119 @@
 </template>
 <script>
 Polymer({
-    is: 'my-mcm',
-    observers: [
-            "doSearch(search,dom,index)"
-                ],
-    _toJSON : function(e){
-        r=e.toJSON();
-        r.refMap=e.refMap;
-        return r
+is: 'my-mcm',
+observers: [
+        "doSearch(search,dom,index)",
+        "_getDom(route,dom)",
+        "_resetPage(output)"
+            ],
+_toJSON : function(e){
+    r=e.toJSON();
+    r.refMap=e.refMap;
+    return r
+},
+_fromJSON : function(e){
+    r=elasticlunr.Index.load(e);
+    this.refMap = e.refMap;
+    return r;
+},
+properties: {
+    raw_index: {
+        type: Object,
+        readOnly: false
     },
-    _fromJSON : function(e){
-        r=elasticlunr.Index.load(e);
-        this.refMap = e.refMap;
-        return r;
+    index: {
+        type: Object,
+        readOnly: false,
+        notify: true,
+        computed: '_fromJSON(index_p)'
     },
-    properties: {
-        raw_index: {
-            type: Object,
-            readOnly: false
-        },
-        index: {
-            type: Object,
-            readOnly: false,
-            notify: true,
-            computed: '_fromJSON(index_p)'
-        },
-        selected: {
-            type: String,
-            notify: false,
-        },
-        selectedPast: {
-            type: Object,
-            value: ""
-        },
-        dom: {
-            type: Object,
-            notify: true
-        },
-        search: {
-            type: String,
-        },
-        output: {
-            type: Array,
-            notify: true,
-            value: [{title:"Loading index...",ref:""}],
-        },
-        refMap: {
-            type: Object,
-            value: {}
-        }
+    dom: {
+        type: Object,
+        notify: true
     },
-    doSearch: function(search,dom,index){
-        var res = index.search(search);
-        var _this = this;
-        this.output = [];
-        res.forEach(function(e){
-            e.ref = _this.refMap[e.ref];
-            var el = dom.getElementById(e.ref);
-            _this.push("output",{title:el.children[0].textContent,
-                                body:el.children[1].textContent.slice(0,100),
-                                parent:el.parentNode.children[0].textContent,
-                                ref:e.ref});
+    search: {
+        type: String,
+    },
+    output: {
+        type: Array,
+        notify: true,
+        value: [{title:"Loading index...",ref:"",parent:"Please wait"}],
+    },
+    refMap: {
+        type: Object,
+        value: {}
+    },
+    route: {
+        type: String,
+        value: ""
+    },
+    hide: {
+        type: Boolean
+    }
+},
+_getDom: function(r1,dom){
+      console.log("getDom,",r1)
+      var search = r1.path;
+      var el = dom.getElementById(search);
+      if(!el){
+          
+          console.log('resetting')
+          window.location.hash="";
+          var myNode = this.$.data2;
+          myNode.innerHTML='';
+          this.hide=true;
+          return;}
+      this.output=[];
+      var myNode = this.$.data2;
+      myNode.innerHTML='';
+      this.hide=false;
+      var el=el.cloneNode(true);
+      var d = myNode;
+      var elCh = el.querySelectorAll(":scope > section");
+      if (!search.startsWith("rule") && !search.startsWith("article") && (el.classList.contains("level1")  || elCh.length!=0)){
+          elCh = Array.prototype.slice.call(elCh);
+          elCh.forEach(function(e){
+              var e2 = e.children[0].cloneNode(true);
+              var a = document.createElement("a");
+              a.setAttribute("href","#" + e.getAttribute("id"));
+              a.appendChild(e2)
+              d.appendChild(a);
+          });
+      } else {
+          d.appendChild(el);
+      }
+      el.querySelectorAll("nav");
+  },
+  _resetPage: function(output){
+      if(output.length==0 || output[0].title=="Loading index..."){return;}
+      window.location.hash="";
+      var myNode = this.$.data2;
+      myNode.innerHTML='';
+      this.hide = true;
+      this.currentResultPage=0;
+  },
+  doSearch: function(search,dom,index){
+      var res = index.search(search);
+      var _this = this;
+      this.output = [];
+      res.forEach(function(e){
+          e.ref = _this.refMap[e.ref];
+          var el = dom.getElementById(e.ref);
+          _this.push("output",{title:el.children[0].textContent,
+                            body:el.children[1].textContent.slice(0,100),
+                            parent:el.parentNode.children[0].textContent,
+                            ref:e.ref});
         });
         var o = this.output;
         this.output = [];
         this.output = o;
+        if(this.output.length==0 || this.output[0].title=="Loading index..."){return;}
+        window.location.hash="";
+        var myNode = this.$.data2;
+        myNode.innerHTML='';
+        this.hide = true;
+        this.currentResultPage=0;
     },
 
     ready: function() {

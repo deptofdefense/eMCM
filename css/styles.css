@@ -137,7 +137,6 @@ img:hover {
 }
 #reader {
 	margin-top: 30px;
-	height: 1024px;
 	overflow-y:auto;
 	overflow-x: hidden;
 }
