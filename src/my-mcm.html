@@ -94,7 +94,7 @@ Polymer({
     },
 
     ready: function() {
-        this.importHref("/src/raw-mcm.html",function(e){
+        this.importHref("/mcm.html",function(e){
             console.log("imported raw");
             this.dom = e.target.import;
             var _this = this;
@@ -102,7 +102,7 @@ Polymer({
 
             function createIndex(){
                 console.log("Building Index");
-                var res = Polymer.dom(_this.dom).querySelectorAll('section.level2');
+                var res = Polymer.dom(_this.dom).querySelectorAll('section');
                 var worker = new Worker("src/service-indexer.js");
                 worker.onmessage = function (e) {
                      worker.terminate();
