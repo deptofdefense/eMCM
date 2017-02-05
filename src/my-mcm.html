@@ -16,6 +16,7 @@
 }
 
 </style>
+<!-- Display search results -->
 <template id="items" is="dom-repeat" items="{{output}}">
     <a name="{{item.ref}}" href="/#{{item.ref}}">
     <div class="section-link row">
@@ -29,9 +30,13 @@
     </div>
     </a>
 </template>
+
+<!-- display document content -->
 <div id="reader" class="col-md-8">
     <div id="data2"></div>
 </div>
+
+<!-- show document footnotes -->
 <div id="footnote" class="col-md-4" hidden$="{{hide}}">
     <div id="disc" class="footnote">
         <h2>Discussion</h2>
@@ -54,19 +59,21 @@
             <a href="#">Request or add on Github</a></div>
     </div>
 </div>
+
+<!-- persist search index to indexeddb -->
 <app-indexeddb-mirror log
     key="mcm"
     data="{{_toJSON(raw_index)}}"
     persisted-data="{{index_p}}">
 </app-indexeddb-mirror>
 </template>
+
 <script>
 Polymer({
 is: 'my-mcm',
 observers: [
         "doSearch(search,dom,index)",
         "_getDom(route,dom)",
-        "_resetPage(output)"
             ],
 _toJSON : function(e){
     r=e.toJSON();
@@ -118,13 +125,9 @@ _getDom: function(r1,dom){
       var search = r1.path;
       var el = dom.getElementById(search);
       if(!el){
-          
-          console.log('resetting')
-          window.location.hash="";
-          var myNode = this.$.data2;
-          myNode.innerHTML='';
-          this.hide=true;
-          return;}
+          this._resetPage();
+          return;
+      }
       this.output=[];
       var myNode = this.$.data2;
       myNode.innerHTML='';
@@ -146,13 +149,11 @@ _getDom: function(r1,dom){
       }
       el.querySelectorAll("nav");
   },
-  _resetPage: function(output){
-      if(output.length==0 || output[0].title=="Loading index..."){return;}
+  _resetPage: function(){
+      this.hide = true;
       window.location.hash="";
       var myNode = this.$.data2;
       myNode.innerHTML='';
-      this.hide = true;
-      this.currentResultPage=0;
   },
   doSearch: function(search,dom,index){
       var res = index.search(search);
@@ -169,12 +170,7 @@ _getDom: function(r1,dom){
         var o = this.output;
         this.output = [];
         this.output = o;
-        if(this.output.length==0 || this.output[0].title=="Loading index..."){return;}
-        window.location.hash="";
-        var myNode = this.$.data2;
-        myNode.innerHTML='';
-        this.hide = true;
-        this.currentResultPage=0;
+        this._resetPage()
     },
 
     ready: function() {
