@@ -3,10 +3,10 @@
   "description": "",
   "main": "index.html",
   "authors": [
-    "Thomas Bereknyei <tomberek@gmail.com>"
+    "Thomas Bereknyei <tom@dds.com>"
   ],
   "license": "BSD-3-Clause",
-  "homepage": "https://github.com/deptofdefense/mcm",
+  "homepage": "https://github.com/deptofdefense/emcm",
   "private": true,
   "ignore": [
     "**/.*",
