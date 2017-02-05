@@ -24,16 +24,7 @@ a {
 
 }
 
-#browse,#read {
-	width: 100%;
-	height: 1024px;
-}
-
-#mcmlogo {
-
-}
-
-#mcmlogo img {
+.logo img {
 	width: 100%;
 	height: auto;
 }
@@ -77,20 +68,7 @@ input#searchbar::-webkit-input-placeholder {
 	border-radius: 0px 10px 10px 0px;
 	transition: background-color 0.5s ease;
 	background: transparent;
-}
-
-.section-link .overlay {
-	position: absolute;
-	left:0; top: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 0;
-}
-.section-link .overlay h2{
-	margin-top: 0;
-	text-align: right;
-	color: white;
-	padding-right: 20px;
+	cursor: pointer;
 }
 
 .section-link h2 {
@@ -110,7 +88,6 @@ input#searchbar::-webkit-input-placeholder {
 
 .section-link:hover > div {
 	background: #B8FFEB;
-	border-radius: 0px 10px 10px 0px;
 }
 
 .close {
