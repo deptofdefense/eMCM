@@ -40,6 +40,9 @@ $(function() {
 					navContainer.appendChild(section.navItem)
 				}
 			}
+
+			section.node = renderContentDiv(id)
+			content.appendChild(section.node)
 		})
 
 		renderViewableRangeForSection(MCMflat[0])
@@ -53,17 +56,34 @@ $(function() {
 		scroller.on('scroll:progress', function(event) {
 			if (scroller.directionY < 0) {
 				var index = MCMflat.indexOf(firstRenderedSection)
-				if (index > 0 && scroller.y < window.innerHeight / 2) {
-					firstRenderedSection = renderSection(MCMflat[index - 1])
+				var firstNode = firstRenderedSection.node
+				if (index > 0 && scroller.y < firstNode.offsetTop + firstNode.offsetHeight) {
+					firstRenderedSection = MCMflat[index - 1]
+					var newNode = renderSection(firstRenderedSection)
+					document.body.scrollTop += newNode.offsetHeight
 				}
 			} else {
 				var index = MCMflat.indexOf(lastRenderedSection)
 				if (index < MCMflat.length - 1 && scroller.y + window.innerHeight > lastRenderedSection.node.offsetTop) {
-					lastRenderedSection = MCMflat[++index]
+					lastRenderedSection = MCMflat[index + 1]
 					renderSection(lastRenderedSection)
 				}
 			}
 		})
+
+		window.onhashchange = function(event) {
+			event.preventDefault()
+			event.stopPropagation()
+
+			var hash = location.hash.substr(1)
+			for (var i = 0, count = MCMflat.length; i < count; i++) {
+				var section = MCMflat[i]
+				if (section._id === hash) {
+					renderViewableRangeForSection(section)
+					return
+				}
+			}
+		}
 
 		setTimeout(function() {
 			forEach(MCMflat, function(section) {
@@ -77,15 +97,9 @@ $(function() {
 	var searchTimeout
 	$('#searchbar').on('input', performSearch)
 
-	function clearContent() {
-		forEach(content.childNodes, function(child) {
-			content.removeChild(child)
-		})
-	}
-
 	function renderSection(section) {
-		if (!section.node) {
-			var contentDiv = section.node = renderContentDiv(section._id)
+		var contentDiv = section.node
+		if (!section.firstChild) {
 			contentDiv.innerHTML = headerForSection(section)
 
 			if (section.content) {
@@ -96,16 +110,13 @@ $(function() {
 			}
 		}
 
-		content.appendChild(section.node)
-		return section.node
+		return contentDiv
 	}
 
 	var firstRenderedSection
 	var lastRenderedSection
 
 	function renderViewableRangeForSection(section) {
-		clearContent()
-
 		var index = MCMflat.indexOf(section)
 		if (index > 0) {
 			firstRenderedSection = MCMflat[index - 1]
