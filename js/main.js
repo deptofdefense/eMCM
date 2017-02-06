@@ -149,10 +149,15 @@ $(function() {
 
 	var LIST_REGEXP = /<(\/?)list/g
 	var URL_REGEXP = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm
+	var RCM_REGEXP = /R\.C\.M\.\s*(\d+)((\(\w+\))*)/ig
 	function contentize(html) {
 		return html.
 			replace(LIST_REGEXP, '<$1ol').
-			replace(URL_REGEXP, '<a href="$&">$&</a>')
+			replace(URL_REGEXP, '<a href="$&">$&</a>').
+			replace(RCM_REGEXP, function(string, rule, sections) {
+				sections = sections.replace(')(', '-').replace(/\(|\)/g, '')
+				return '<a href="#rcm-' + rule + '-' + sections + '">' + string + '</a>'
+			})
 	}
 
 	var LIST_TYPES = {
