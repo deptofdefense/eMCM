@@ -66,6 +66,10 @@ input#searchbar::-webkit-input-placeholder {
 	color: #D8D8D8;
 }
 
+.search-result {
+	background: yellow;
+}
+
 .section-link {
 	border-radius: 0px 10px 10px 0px;
 	transition: background-color 0.5s ease;

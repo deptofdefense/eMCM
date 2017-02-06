@@ -195,9 +195,16 @@ $(function() {
 	}
 
 	var searchBar = document.getElementById('searchbar')
+	var previousResults = []
 	function performSearch() {
 		var results = searchIndex.search(searchBar.value)
-		var hrefs = results.map(function(result) { return '#' + result.ref })
+		var hrefs = results.map(function(result) { return '#' + result.ref }).sort()
+		console.log(results.length)
+		var spanRegexp = /<span class='search-result'>([^<])<\/span>/gi
+		previousResults.forEach(function(result) {
+			var target = document.getElementById(result.ref)
+			target.innerHTML = target.innerHTML.replace(spanRegexp, "$0")
+		})
 
 		if (results.length) {
 			document.querySelectorAll('.toc .nav li a').forEach(function(a) {
@@ -211,8 +218,19 @@ $(function() {
 				}
 			})
 
-			window.scrollTo(0, document.getElementById(hrefs[0].substr(1)).offsetTop - 40)
+			var regexp = new RegExp(searchBar.value, 'gi')
+			hrefs.forEach(function(href, i) {
+				var target = document.getElementById(href.substr(1))
+				target.innerHTML = target.innerHTML.replace(regexp, "<span class='search-result'>$&</span>")
+
+				if (i === 0) {
+					window.scrollTo(0, target.offsetTop - 40)
+				}
+			})
+
 		}
+
+		previousResults = results
 	}
 
 	function romanizeTitle(title) {
