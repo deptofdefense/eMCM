@@ -147,8 +147,12 @@ $(function() {
 		return string.trim().replace(/[\s|-]+/g, '-').split(/[^\w|-]/)[0].toLowerCase()
 	}
 
+	var LIST_REGEXP = /<(\/?)list/g
+	var URL_REGEXP = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm
 	function contentize(html) {
-		return html.replace(/<(\/?)list/g, '<$1ol')
+		return html.
+			replace(LIST_REGEXP, '<$1ol').
+			replace(URL_REGEXP, '<a href="$&">$&</a>')
 	}
 
 	var LIST_TYPES = {
