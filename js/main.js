@@ -110,6 +110,7 @@ $(function() {
 			result += "</h1>"
 		} else if (section.type === 'rule') {
 			result = "<h3>Rule " + id + ". " + section.title
+			result += "<a id=\"rcm-" + id + "\"></a>"
 		} else if (section.type === 'article') {
 			result = "<h3>Article " + id + "&mdash;" + section.title
 		} else if (section.type === 'appendix') {
@@ -156,7 +157,9 @@ $(function() {
 			replace(URL_REGEXP, '<a href="$&">$&</a>').
 			replace(RCM_REGEXP, function(string, rule, sections) {
 				sections = sections.replace(')(', '-').replace(/\(|\)/g, '')
-				return '<a href="#rcm-' + rule + '-' + sections + '">' + string + '</a>'
+				var path = ['rcm', rule]
+				if (sections) path.push(sections)
+				return '<a href="#' + path.join('-') + '">' + string + '</a>'
 			})
 	}
 
