@@ -109,10 +109,10 @@ $(function() {
 			result += "CHAPTER " + romanize(id) + ". " + section.title.toUpperCase()
 			result += "</h1>"
 		} else if (section.type === 'rule') {
-			result = "<h3>Rule " + id + ". " + section.title
+			result = "<h3>Rule " + id + ". " + section.title + "</h3>"
 			result += "<a id=\"rcm-" + id + "\"></a>"
 		} else if (section.type === 'article') {
-			result = "<h3>Article " + id + "&mdash;" + section.title
+			result = "<h3>Article " + id + "&mdash;" + section.title + "</h3>"
 		} else if (section.type === 'appendix') {
 			result = "<h1>APPENDIX " + id + "<br>"
 			result += section.title.toUpperCase()
@@ -156,7 +156,7 @@ $(function() {
 			replace(LIST_REGEXP, '<$1ol').
 			replace(URL_REGEXP, '<a href="$&">$&</a>').
 			replace(RCM_REGEXP, function(string, rule, sections) {
-				sections = sections.replace(')(', '-').replace(/\(|\)/g, '')
+				sections = sections.replace(/\)\(/g, '-').replace(/\(|\)/g, '')
 				var path = ['rcm', rule]
 				if (sections) path.push(sections)
 				return '<a href="#' + path.join('-') + '">' + string + '</a>'
@@ -182,9 +182,8 @@ $(function() {
 		var lists = el.querySelectorAll('ol')
 		lists && lists.forEach(function(list) {
 			Array.prototype.forEach.call(list.children, function(li) {
-				if (li.nodeName.toUpperCase() === 'LI' && typeof li.getAttribute('index') !== 'undefined') {
-					var index = li.getAttribute('index')
-
+				var index = li.getAttribute('index')
+				if (li.nodeName.toUpperCase() === 'LI' && index) {
 					if (!list.type) {
 						for (var listType in LIST_TYPES) {
 							if (LIST_TYPES[listType].test(index)) {
@@ -197,6 +196,17 @@ $(function() {
 						li.value = parseInt(index)
 					} else if (listType === 'a' || listType === 'A') {
 						li.value = ALPHABET.indexOf(index.toLowerCase()) + 1
+					}
+
+					var parent = li
+					while (parent = parent.parentNode) {
+						var a = $(parent).children('a[id]')
+						if (a.length) {
+							var target = document.createElement('a')
+							target.id = a[0].id + '-' + index
+							li.insertBefore(target, li.firstChild)
+							return
+						}
 					}
 				}
 			})
