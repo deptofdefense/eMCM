@@ -54,7 +54,7 @@ $(function() {
 					fixDiscussionElements(contentDiv)
 				}, timeout)
 
-				timeout += 100
+				timeout += 10
 			}
 		})
 
