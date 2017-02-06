@@ -41,6 +41,7 @@ $(function() {
 				var wrapper = document.createElement('div')
 				wrapper.id = parameterize(key)
 				wrapper.innerHTML = renderPart(key, value)
+				fixListElements(wrapper)
 				content.appendChild(wrapper)
 			}
 		}
@@ -72,17 +73,30 @@ $(function() {
 		return string.trim().replace(/[\s|-]+/g, '-').split(/[^\w|-]/)[0].toLowerCase()
 	}
 
-	var REPLACEMENTS = {
-		header: 'h3',
-		list: 'ol'
+	function contentize(html) {
+		return html.replace(/<(\/?)list/g, '<$1ol')
 	}
 
-	function contentize(html) {
-		for (var key in REPLACEMENTS) {
-			html = html.replace(new RegExp("<(/?)" + key, 'g'), "<$1" + REPLACEMENTS[key])
-		}
+	var LIST_TYPES = {
+		'I': /I/,
+		'i': /i/,
+		'A': /[A-Z]/,
+		'a': /[a-z]/,
+		'1': /[0-9]/,
+	}
 
-		return html
+	function fixListElements(el) {
+		var lists = el.querySelectorAll('ol')
+		lists && lists.forEach(function(list) {
+			var li = list.querySelector('li')
+			var index = li.getAttribute('index')
+			for (var listType in LIST_TYPES) {
+				if (LIST_TYPES[listType].test(index)) {
+					list.type = listType
+					break
+				}
+			}
+		})
 	}
 
 	function romanizeTitle(title) {

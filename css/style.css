@@ -142,3 +142,33 @@ img:hover {
 .toc .nav>.active .nav {
 	display: block;
 }
+
+.content {
+	text-align: justify;
+}
+
+.content > div {
+	margin: 5rem 0 10rem 0;
+}
+
+.content section {
+	margin-top: 3rem;
+}
+
+.content ol[type="1"] > li > header {
+	font-weight: bold;
+}
+
+.content ol[type="a"] > li > header {
+	display: inline;
+	font-style: italic;
+}
+
+.content ol[type="a"] > li > header + p {
+	display: inline;
+}
+
+.sigblock {
+	text-align: right;
+	font-family: monospace;
+}
