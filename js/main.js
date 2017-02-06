@@ -141,10 +141,15 @@ $(function() {
 
 	function fixListElements(el) {
 		var lists = el.querySelectorAll('ol')
-		if (!lists) return
-
 		lists && lists.forEach(function(list) {
-			var li = list.querySelector('li')
+			var li
+			Array.prototype.forEach.call(list.children, function(child) {
+				if (child.nodeName.toLowerCase === 'li' && child.getAttribute('index')) {
+					li = child
+				}
+			})
+			if (!li) return
+
 			var index = li.getAttribute('index')
 			for (var listType in LIST_TYPES) {
 				if (LIST_TYPES[listType].test(index)) {
