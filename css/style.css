@@ -16,7 +16,7 @@ body > header {
 	position: fixed;
 	width: 100%;
 	margin: 0;
-	padding: 15px 50px 0 50px;
+	padding: 35px 50px 0 50px;
 	z-index: 5;
 	background: white;
 	border-bottom: 1px solid #ddd;
@@ -110,12 +110,7 @@ input#searchbar::-webkit-input-placeholder {
 .header {
 	margin-top: 30px;
 }
-#reader {
-	margin-top: 30px;
-	height: 1024px;
-	overflow-y:auto;
-	overflow-x: hidden;
-}
+
 .footnote {
 	width: 100%;
 	transition: all 0.5s ease-in-ease-out;
@@ -218,4 +213,21 @@ discussion:before {
 	content: 'Discussion';
 	font-size: 1.3rem;
 	font-weight: bold;
+}
+
+.beta-banner {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	background: #ff0000;
+	color: #000;
+	font-weight: bold;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.beta-banner a {
+	color: #3f51b5;
 }
