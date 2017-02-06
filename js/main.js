@@ -58,8 +58,16 @@ $(function() {
 
 		$('body').scrollspy({
 			target: '[data-toc]',
-			offset: 100
+			offset: 150
 		})
+	})
+
+	var searchTimeout
+	$('#searchbar').on('input', function(e) {
+		if (searchTimeout)
+			clearTimeout(searchTimeout)
+
+		searchTimeout = setTimeout(performSearch, 100)
 	})
 
 	function idForChain(chain) {
@@ -184,6 +192,27 @@ $(function() {
 			disc.style.top = parent.offsetTop + 'px'
 			asidesContainer.appendChild(disc)
 		})
+	}
+
+	var searchBar = document.getElementById('searchbar')
+	function performSearch() {
+		var results = searchIndex.search(searchBar.value)
+		var hrefs = results.map(function(result) { return '#' + result.ref })
+
+		if (results.length) {
+			document.querySelectorAll('.toc .nav li a').forEach(function(a) {
+				var isVisible = hrefs.indexOf(a.getAttribute('href')) !== -1
+				a.parentNode.style.display = isVisible ? 'block' : 'none'
+				if (isVisible) {
+					while (a = a.parentNode) {
+						if (a.nodeName === 'UL' || a.nodeName === 'LI')
+							a.style.display = 'block'
+					}
+				}
+			})
+
+			window.scrollTo(0, document.getElementById(hrefs[0].substr(1)).offsetTop - 40)
+		}
 	}
 
 	function romanizeTitle(title) {
