@@ -129,3 +129,16 @@ img:hover {
 	max-height: 280px;
 	min-height: 30px;
 }
+
+.toc {
+	position: fixed;
+	width: 250px;
+}
+
+.toc .nav li .nav {
+	display: none;
+}
+
+.toc .nav>.active .nav {
+	display: block;
+}

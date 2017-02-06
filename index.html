@@ -7,7 +7,6 @@
 		<title>eMCM</title>
 
 		<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" href="/css/bootstrap-toc.min.css">
 		<link rel="stylesheet" type="text/css" href="/css/style.css">
 	</head>
 	
@@ -15,7 +14,7 @@
 		<div id="nav" class="container">
 			<div class="row">
 				<div class="logo col-xs-6 col-md-3">
-					<img src="img/logo.png" alt="Electronic Manual for Court Martial" />
+					<img src="img/logo.png" alt="Electronic Manual for Court Martial">
 				</div>
 
 				<div class="col-xs-6 col-md-3 pull-right">
@@ -27,10 +26,11 @@
 				</div>
 
 				<div class="col-xs-12 col-md-6">
-					<input id="searchbar" placeholder="Start typing to search" />
+					<input id="searchbar" placeholder="Start typing to search">
 				</div>
 			</div>
 
+			<!-- one page version -->
 			<div class="row">
 				<div class="col-xs-12 col-sm-2">
 					<nav id="toc"></nav>
@@ -41,22 +41,29 @@
 				</div>
 			</div>
 
-			<div class="section-link row" data-navitem-proto>
-				<div class="col-md-8 col-md-offset-2">
-					<h2>Title</h2>
-				</div>
-			</div>
+			<!-- json version -->
+			<div class="row">
+				<div class="col-xs-3 fixed hidden-print" data-transition-to="col-xs-2" role="complimentary">
+				<!-- <div class="col-xs-12 col-md-9 col-md-offset-3" data-transition-to="col-xs-2" role="complimentary"> -->
+					<nav data-toc class="toc">
+						<ul class="nav">
+							<li data-nav-proto>
+								<a data-target data-title>
+								</a>
 
-			<div class="content row" data-content-proto>
-				<div class="col-xs-12">
-					<div data-content></div>
+								<ul data-subnav class="nav"></ul>
+							</li>
+						</ul>
+					</nav>
+				</div>
+
+				<div class="col-xs-7" role="main" data-content>
 				</div>
 			</div>
 		</div>
 		
 		<script src="/js/jquery-3.1.1.slim.min.js"></script>
-		<script src="/js/bootstrap.min.js"></script>
-		<script src="/js/bootstrap-toc.min.js"></script>
+		<script src="/js/bootstrap.js"></script>
 		<script src="/js/main.js"></script>
 	</body>
 </html>
