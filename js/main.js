@@ -198,8 +198,8 @@ $(function() {
 
 	function fixListElements(el) {
 		var lists = el.querySelectorAll('ol')
-		lists && lists.forEach(function(list) {
-			Array.prototype.forEach.call(list.children, function(li) {
+		forEach(lists, function(list) {
+			forEach(list.children, function(li) {
 				var index = li.getAttribute('index')
 				if (li.nodeName.toUpperCase() === 'LI' && index) {
 					if (!list.type) {
@@ -233,7 +233,7 @@ $(function() {
 
 	function fixDiscussionElements(el) {
 		var els = el.querySelectorAll('discussion')
-		els && els.forEach(function(disc) {
+		forEach(els, function(disc) {
 			var parent = disc.parentNode
 			disc.style.top = parent.offsetTop + 'px'
 			asidesContainer.appendChild(disc)
@@ -242,7 +242,7 @@ $(function() {
 
 	function fixTableElements(el) {
 		var tables = el.querySelectorAll('table')
-		tables && tables.forEach(function(table) {
+		forEach(tables, function(table) {
 			table.className += "table table-bordered table-condensed"
 		})
 	}
@@ -258,7 +258,7 @@ $(function() {
 		content.style.display = !searchBar.value || results.length ? 'block' : 'none'
 		asidesContainer.style.display = !searchBar.value || results.length ? 'block' : 'none'
 
-		document.querySelectorAll('.toc .nav li a').forEach(function(a) {
+		forEach(document.querySelectorAll('.toc .nav li a'), function(a) {
 			var isVisible = !searchBar.value || hrefs.indexOf(a.getAttribute('href')) !== -1
 			a.parentNode.style.display = isVisible ? 'block' : 'none'
 			if (isVisible && searchBar.value) {
@@ -296,7 +296,7 @@ $(function() {
 		if (comps.length > 1) {
 			var romanized = [romanize(comps[0])]
 			if (!romanized[0]) romanized.pop()
-				
+
 			romanized.push(comps[1])
 			return romanized.join(' - ')
 		} else { return comps[0] }
@@ -310,7 +310,7 @@ $(function() {
 				num -= lookup[i]
 			}
 		}
-		
+
 		return roman
 	}
 
@@ -325,5 +325,10 @@ $(function() {
 				forEachRecursive(object.children, func, newChain)
 			}
 		})
+	}
+
+	function forEach(array, func) {
+		if (!array) { return }
+		Array.prototype.forEach.call(array, func)
 	}
 })
