@@ -119,7 +119,9 @@ input#searchbar::-webkit-input-placeholder {
 
 .toc {
 	width: 230px;
+	height: 100%;
 	margin-top: 50px;
+	overflow-y: auto;
 }
 
 .toc.affix {
@@ -138,7 +140,7 @@ input#searchbar::-webkit-input-placeholder {
 	border-left: 2px solid #3f51b5;
 }
 
-.toc .nav li .nav {
+.toc .nav li .nav, .toc .nav li .nav li .nav {
 	display: none;
 }
 
@@ -152,7 +154,7 @@ input#searchbar::-webkit-input-placeholder {
 	padding-left: 30px;
 }
 
-.toc .nav>.active .nav {
+.toc .nav>.active .nav, .toc .nav>.active .nav>.active .nav {
 	display: block;
 }
 

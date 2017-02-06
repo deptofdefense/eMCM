@@ -46,7 +46,8 @@ $(function() {
 		})
 
 		$('body').scrollspy({
-			target: '[data-toc]'
+			target: '[data-toc]',
+			offset: 100
 		})
 	})
 
