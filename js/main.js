@@ -21,9 +21,8 @@ $(function() {
 		window.MCM = JSON.parse(json)
 		window.MCMflat = flattenArray(MCM, 'children')
 
-		var timeout = 0
 		forEachRecursive(MCM, function(section, chain) {
-			var title = titleForSection(section)
+			var title = section._title = titleForSection(section)
 			var id = section._id = parameterize(idForChain(chain))
 
 			if (chain.length > 1) var parent = chain[chain.length - 2]
@@ -40,10 +39,6 @@ $(function() {
 				} else {
 					navContainer.appendChild(section.navItem)
 				}
-			}
-
-			if (section.content) {
-				searchIndex.addDoc({id: id, title: title, content: section.content})
 			}
 		})
 
@@ -69,6 +64,14 @@ $(function() {
 				}
 			}
 		})
+
+		setTimeout(function() {
+			forEach(MCMflat, function(section) {
+				if (section.content) {
+					searchIndex.addDoc({id: section._id, title: section._title, content: section.content})
+				}
+			})
+		}, 100)
 	})
 
 	var searchTimeout
