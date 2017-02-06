@@ -139,6 +139,7 @@ input#searchbar::-webkit-input-placeholder {
 }
 
 .toc a {
+	color: #323A44;
 	border-left: 2px solid transparent;
 }
 
