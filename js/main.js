@@ -181,26 +181,25 @@ $(function() {
 	function fixListElements(el) {
 		var lists = el.querySelectorAll('ol')
 		lists && lists.forEach(function(list) {
-			var li
-			Array.prototype.forEach.call(list.children, function(child) {
-				if (child.nodeName.toLowerCase() === 'li' && child.getAttribute('index')) {
-					li = child
-				}
-			})
-			if (!li) return
+			Array.prototype.forEach.call(list.children, function(li) {
+				if (li.nodeName.toUpperCase() === 'LI' && typeof li.getAttribute('index') !== 'undefined') {
+					var index = li.getAttribute('index')
 
-			var index = li.getAttribute('index')
-			for (var listType in LIST_TYPES) {
-				if (LIST_TYPES[listType].test(index)) {
-					list.type = listType
-					if (listType === '1') {
-						li.value = index
+					if (!list.type) {
+						for (var listType in LIST_TYPES) {
+							if (LIST_TYPES[listType].test(index)) {
+								list.type = listType
+							}
+						}
+					}
+
+					if (list.type === '1') {
+						li.value = parseInt(index)
 					} else if (listType === 'a' || listType === 'A') {
 						li.value = ALPHABET.indexOf(index.toLowerCase()) + 1
 					}
-					break
 				}
-			}
+			})
 		})
 	}
 
