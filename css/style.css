@@ -14,15 +14,35 @@ body > header {
 	position: fixed;
 	width: 100%;
 	margin: 0;
-	padding: 35px 50px 0 50px;
+	padding: 46px 50px 0 50px;
 	z-index: 5;
 	background: white;
-	border-bottom: 1px solid #ddd;
+	box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3);
 }
 
 body > .root {
 	position: absolute;
 	top: 80px;
+}
+
+.beta-banner {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	padding: 2px;
+	margin: 0;
+	text-align: center;
+	background: #E59393;
+	color: #FFFFFF;
+	box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3);
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.beta-banner a {
+	color: #fff;
+	text-decoration: underline;
 }
 
 .logo img {
@@ -212,21 +232,4 @@ discussion:before {
 	content: 'Discussion';
 	font-size: 1.3rem;
 	font-weight: bold;
-}
-
-.beta-banner {
-	width: 100%;
-	padding: 0;
-	margin: 0;
-	text-align: center;
-	background: #ff0000;
-	color: #000;
-	font-weight: bold;
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-
-.beta-banner a {
-	color: #3f51b5;
 }
