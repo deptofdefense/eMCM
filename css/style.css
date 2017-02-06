@@ -181,6 +181,25 @@ input#searchbar::-webkit-input-placeholder {
 }
 
 .sigblock {
+	margin-top: 3rem;
 	text-align: right;
 	font-family: monospace;
+}
+
+.asides {
+	position: relative;
+}
+
+discussion {
+	position: absolute;
+	font-size: 1.25rem;
+	text-align: justify;
+	background: #f4f4f4;
+	padding: 12px;
+}
+
+discussion:before {
+	content: 'Discussion';
+	font-size: 1.3rem;
+	font-weight: bold;
 }

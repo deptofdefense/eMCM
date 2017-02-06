@@ -3,6 +3,7 @@ $(function() {
 	var subNavProto = document.querySelector('[data-subnav-proto]')
 	var content = document.querySelector('[data-content]')
 
+	var asidesContainer = document.querySelector('[data-asides]')
 	var navContainer = navItemProto.parentNode
 	navContainer.removeChild(navItemProto)
 	subNavProto.parentNode.removeChild(subNavProto)
@@ -39,6 +40,7 @@ $(function() {
 				setTimeout(function() {
 					contentDiv.innerHTML += contentize(section.content)
 					fixListElements(contentDiv)
+					fixDiscussionElements(contentDiv)
 				}, timeout)
 
 				timeout += 100
@@ -163,6 +165,15 @@ $(function() {
 					break
 				}
 			}
+		})
+	}
+
+	function fixDiscussionElements(el) {
+		var els = el.querySelectorAll('discussion')
+		els && els.forEach(function(disc) {
+			var parent = disc.parentNode
+			disc.style.top = parent.offsetTop + 'px'
+			asidesContainer.appendChild(disc)
 		})
 	}
 
