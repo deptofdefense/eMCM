@@ -135,6 +135,13 @@ img:hover {
 	width: 250px;
 }
 
+.toc .active > a,
+.toc li > a:hover {
+	color: #3f51b5;
+	background: transparent;
+	border-left: 2px solid #3f51b5;
+}
+
 .toc .nav li .nav {
 	display: none;
 }
