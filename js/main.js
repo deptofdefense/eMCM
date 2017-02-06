@@ -1,3 +1,5 @@
+document.querySelector('[data-no-results]').style.display = 'none'
+
 $(function() {
 	var navItemProto = document.querySelector('[data-nav-proto]')
 	var subNavProto = document.querySelector('[data-subnav-proto]')
@@ -63,12 +65,7 @@ $(function() {
 	})
 
 	var searchTimeout
-	$('#searchbar').on('input', function(e) {
-		if (searchTimeout)
-			clearTimeout(searchTimeout)
-
-		searchTimeout = setTimeout(performSearch, 100)
-	})
+	$('#searchbar').on('input', performSearch)
 
 	function idForChain(chain) {
 		var id = chain.map(function(section) {
@@ -195,29 +192,35 @@ $(function() {
 	}
 
 	var searchBar = document.getElementById('searchbar')
+	var noResults = document.querySelector('[data-no-results]')
 	var previousResults = []
 	function performSearch() {
 		var results = searchIndex.search(searchBar.value)
 		var hrefs = results.map(function(result) { return '#' + result.ref }).sort()
-		console.log(results.length)
-		var spanRegexp = /<span class='search-result'>([^<])<\/span>/gi
+
+		noResults.style.display = searchBar.value && !results.length ? 'block' : 'none'
+		content.style.display = !searchBar.value || results.length ? 'block' : 'none'
+		asidesContainer.style.display = !searchBar.value || results.length ? 'block' : 'none'
+
+		document.querySelectorAll('.toc .nav li a').forEach(function(a) {
+			var isVisible = !searchBar.value || hrefs.indexOf(a.getAttribute('href')) !== -1
+			a.parentNode.style.display = isVisible ? 'block' : 'none'
+			if (isVisible && searchBar.value) {
+				while (a = a.parentNode) {
+					if (a.nodeName === 'UL' || a.nodeName === 'LI')
+						a.style.display = 'block'
+				}
+			}
+		})
+
+		var spanRegexp = /<span class="search-result">([^<])<\/span>/gi
+		console.log(previousResults)
 		previousResults.forEach(function(result) {
 			var target = document.getElementById(result.ref)
-			target.innerHTML = target.innerHTML.replace(spanRegexp, "$0")
+			target.innerHTML = target.innerHTML.replace(spanRegexp, "$&")
 		})
 
 		if (results.length) {
-			document.querySelectorAll('.toc .nav li a').forEach(function(a) {
-				var isVisible = hrefs.indexOf(a.getAttribute('href')) !== -1
-				a.parentNode.style.display = isVisible ? 'block' : 'none'
-				if (isVisible) {
-					while (a = a.parentNode) {
-						if (a.nodeName === 'UL' || a.nodeName === 'LI')
-							a.style.display = 'block'
-					}
-				}
-			})
-
 			var regexp = new RegExp(searchBar.value, 'gi')
 			hrefs.forEach(function(href, i) {
 				var target = document.getElementById(href.substr(1))
@@ -227,7 +230,6 @@ $(function() {
 					window.scrollTo(0, target.offsetTop - 40)
 				}
 			})
-
 		}
 
 		previousResults = results
