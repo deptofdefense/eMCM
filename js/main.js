@@ -8,6 +8,13 @@ $(function() {
 	navContainer.removeChild(navItemProto)
 	subNavProto.parentNode.removeChild(subNavProto)
 
+	var searchIndex = elasticlunr(function() {
+		this.addField('title')
+		this.addField('content')
+		this.setRef('id')
+	})
+	window.searchIndex = searchIndex
+
 	fetch('toc.json', function(json) {
 		window.MCM = JSON.parse(json)
 
@@ -37,6 +44,8 @@ $(function() {
 			contentDiv.innerHTML = headerForSection(section)
 
 			if (section.content) {
+				searchIndex.addDoc({id: id, title: title, content: section.content})
+
 				setTimeout(function() {
 					contentDiv.innerHTML += contentize(section.content)
 					fixListElements(contentDiv)
