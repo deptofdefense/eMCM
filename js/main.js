@@ -19,11 +19,12 @@ $(function() {
 
 	fetch('toc.json', function(json) {
 		window.MCM = JSON.parse(json)
+		window.MCMflat = flattenArray(MCM, 'children')
 
 		var timeout = 0
 		forEachRecursive(MCM, function(section, chain) {
 			var title = titleForSection(section)
-			var id = parameterize(idForChain(chain))
+			var id = section._id = parameterize(idForChain(chain))
 
 			if (chain.length > 1) var parent = chain[chain.length - 2]
 
@@ -41,32 +42,86 @@ $(function() {
 				}
 			}
 
-			var contentDiv = renderContentDiv(id)
-
-			contentDiv.innerHTML = headerForSection(section)
-
 			if (section.content) {
 				searchIndex.addDoc({id: id, title: title, content: section.content})
-
-				setTimeout(function() {
-					contentDiv.innerHTML += contentize(section.content)
-					fixListElements(contentDiv)
-					fixDiscussionElements(contentDiv)
-					fixTableElements(contentDiv)
-				}, timeout)
-
-				timeout += 10
 			}
 		})
+
+		renderViewableRangeForSection(MCMflat[0])
 
 		$('body').scrollspy({
 			target: '[data-toc]',
 			offset: 150
 		})
+
+		var scroller = new FastScroll()
+		scroller.on('scroll:progress', function(event) {
+			if (scroller.directionY < 0) {
+				var index = MCMflat.indexOf(firstRenderedSection)
+				if (index > 0 && scroller.y < window.innerHeight / 2) {
+					firstRenderedSection = renderSection(MCMflat[index - 1])
+				}
+			} else {
+				var index = MCMflat.indexOf(lastRenderedSection)
+				if (index < MCMflat.length - 1 && scroller.y + window.innerHeight > lastRenderedSection.node.offsetTop) {
+					lastRenderedSection = MCMflat[++index]
+					renderSection(lastRenderedSection)
+				}
+			}
+		})
 	})
 
 	var searchTimeout
 	$('#searchbar').on('input', performSearch)
+
+	function clearContent() {
+		forEach(content.childNodes, function(child) {
+			content.removeChild(child)
+		})
+	}
+
+	function renderSection(section) {
+		if (!section.node) {
+			var contentDiv = section.node = renderContentDiv(section._id)
+			contentDiv.innerHTML = headerForSection(section)
+
+			if (section.content) {
+				contentDiv.innerHTML += contentize(section.content)
+				fixListElements(contentDiv)
+				fixDiscussionElements(contentDiv)
+				fixTableElements(contentDiv)
+			}
+		}
+
+		content.appendChild(section.node)
+		return section.node
+	}
+
+	var firstRenderedSection
+	var lastRenderedSection
+
+	function renderViewableRangeForSection(section) {
+		clearContent()
+
+		var index = MCMflat.indexOf(section)
+		if (index > 0) {
+			firstRenderedSection = MCMflat[index - 1]
+			renderSection(firstRenderedSection)
+		} else {
+			firstRenderedSection = section
+		}
+
+		var lastNode = renderSection(section)
+		lastRenderedSection = section
+
+		while (index < MCMflat.length - 1 && (
+				document.body.scrollTop + window.innerHeight > lastNode.offsetTop ||
+				lastNode.offsetHeight < 150
+			)) {
+				lastRenderedSection = MCMflat[++index]
+				lastNode = renderSection(lastRenderedSection)
+			}
+	}
 
 	function idForChain(chain) {
 		var id = chain.map(function(section) {
@@ -129,7 +184,6 @@ $(function() {
 	function renderContentDiv(key) {
 		var el = document.createElement('div')
 		el.id = key
-		content.appendChild(el)
 		return el
 	}
 
@@ -325,6 +379,22 @@ $(function() {
 				forEachRecursive(object.children, func, newChain)
 			}
 		})
+	}
+
+	function flattenArray(array, childrenKey, result) {
+		if (!array) { return result }
+		if (!result) { result = [] }
+
+		forEach(array, function(object) {
+			result.push(object)
+
+			var children = childrenKey ? object[childrenKey] : object
+			if (Array.isArray(children)) {
+				flattenArray(children, childrenKey, result)
+			}
+		})
+
+		return result
 	}
 
 	function forEach(array, func) {
