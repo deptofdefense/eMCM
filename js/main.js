@@ -151,13 +151,21 @@ $(function() {
 		return string.trim().replace(/[\s|-]+/g, '-').split(/[^\w|-]/)[0].toLowerCase()
 	}
 
-	var LIST_REGEXP = /<(\/?)list/g
+	var REGEXP_TRANSFORMS = [
+		[/<(\/?)b/gi, '<$1strong'],
+		[/<(\/?)i/gi, '<$1em'],
+		[/<(\/?)list/gi, '<$1ol'],
+	]
+
 	var URL_REGEXP = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm
 	var RCM_REGEXP = /R\.C\.M\.\s*(\d+)((\(\w+\))*)/ig
 	var MILREVID_REGEXP = /Mil\.R\.Evid\.\s*(\d+)((\(\w+\))*)/ig
 	function contentize(html) {
+		REGEXP_TRANSFORMS.forEach(function(transform) {
+			html = html.replace(transform[0], transform[1])
+		})
+
 		return html.
-			replace(LIST_REGEXP, '<$1ol').
 			replace(URL_REGEXP, '<a href="$&">$&</a>').
 			replace(RCM_REGEXP, function(string, rule, sections) {
 				sections = sections.replace(/\)\(/g, '-').replace(/\(|\)/g, '')
