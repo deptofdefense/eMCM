@@ -118,9 +118,13 @@ input#searchbar::-webkit-input-placeholder {
 }
 
 .toc {
-	position: fixed;
 	width: 250px;
-	margin-top: 5rem;
+	margin-top: 50px;
+}
+
+.toc.affix {
+	margin-top: 0;
+	top: 30px;
 }
 
 .toc .active > a,
