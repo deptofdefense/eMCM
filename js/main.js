@@ -87,6 +87,10 @@ $(function() {
 
 		if (section.type === 'rule') {
 			return section.index + '. ' + section.title
+		} else if (section.type === 'article') {
+			return section.index + '&ndash;' + section.title
+		} else if (section.type === 'appendix') {
+			return (section.index) + '. ' + section.title
 		}
 
 		return section.title
@@ -106,6 +110,12 @@ $(function() {
 			result += "</h1>"
 		} else if (section.type === 'rule') {
 			result = "<h3>Rule " + id + ". " + section.title
+		} else if (section.type === 'article') {
+			result = "<h3>Article " + id + "&mdash;" + section.title
+		} else if (section.type === 'appendix') {
+			result = "<h1>APPENDIX " + id + "<br>"
+			result += section.title.toUpperCase()
+			result += "</h1>"
 		} else {
 			result = "<h3>" + section.title + "</h3>"
 		}
