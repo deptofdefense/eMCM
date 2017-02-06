@@ -13,25 +13,30 @@ $(function() {
 		window.MCM = JSON.parse(json)
 
 		renderNavItems(navContainer, MCM, true)
-		renderContentDivs(MCM)
 
-		var keys = Object.keys(MCM)
-		renderContentFor(keys[0])
-		renderContentFor(keys[1])
+		var timeout = 0
+		forEachRecursive(MCM, function(key, value, keypath) {
+			var keypath = keypath.join('_')
+			var param = parameterize(keypath)
+			var contentDiv = renderContentDiv(param)
+			setTimeout(renderContentInto.bind(null, contentDiv, keypath, value), timeout)
+			timeout += 100
+		})
 
 		$('body').scrollspy({
 			target: '[data-toc]'
 		})
 	})
 
-	function renderContentFor(key) {
-		var contentDiv = document.getElementById(parameterize(key))
-		var html = contentize(MCM[key])
+	function renderContentInto(div, key, html) {
+		html = contentize(html)
 		if (key.indexOf('_') === -1) {
-			contentDiv.innerHTML = renderPart(key, html)
+			div.innerHTML = renderPart(key, html)
+		} else {
+			div.innerHTML = html
 		}
 
-		fixListElements(contentDiv)
+		fixListElements(div)
 	}
 
 	function renderPart(key, html) {
@@ -40,25 +45,15 @@ $(function() {
 		if (id) result += "Part " + romanize(id) + "<br>"
 		result += key.split(' - ')[1].toUpperCase()
 		result += "</h1>"
-		result += contentize(html)
+		result += html
 		return result
 	}
 
-	function renderContentDivs(sections, keypath) {
-		if (!keypath) keypath = []
-
-		for (var key in sections) {
-			var value = sections[key]
-			var newKeypath = keypath.concat(key)
-
-			if (typeof value === 'string') {
-				var el = document.createElement('div')
-				el.id = parameterize(newKeypath.join('_'))
-				content.appendChild(el)
-			} else if (typeof value === 'object') {
-				renderContentDivs(value, newKeypath)
-			}
-		}
+	function renderContentDiv(key) {
+		var el = document.createElement('div')
+		el.id = parameterize(key)
+		content.appendChild(el)
+		return el
 	}
 
 	function renderNavItems(container, sections, root) {
@@ -144,5 +139,19 @@ $(function() {
 		}
 		
 		return roman
+	}
+
+	function forEachRecursive(object, func, keypath) {
+		if (!keypath) keypath = []
+
+		Object.keys(object).forEach(function(key) {
+			var newKeypath = keypath.concat(key)
+			var value = object[key]
+			if (typeof value === 'object') {
+				forEachRecursive(value, func, newKeypath)
+			} else {
+				func(key, value, newKeypath)
+			}
+		})
 	}
 })
