@@ -79,14 +79,14 @@ $(function() {
 		var result
 		var id = parseInt(section.index)
 		if (section.type === 'part') {
-			result = "<h1 style='text-align: center'>"
+			result = "<h1>"
 			if (id) result += "PART " + romanize(id) + "<br>"
 			result += section.title.toUpperCase()
 			result += "</h1>"
 		} else if (section.type === 'chapter') {
-			result = "<h2 style='text-align: center'>"
+			result = "<h1>"
 			result += "CHAPTER " + romanize(id) + ". " + section.title.toUpperCase()
-			result += "</h2>"
+			result += "</h1>"
 		} else if (section.type === 'rule') {
 			result = "<h3>Rule " + id + ". " + section.title
 		} else {

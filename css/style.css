@@ -160,12 +160,9 @@ input#searchbar::-webkit-input-placeholder {
 	text-align: justify;
 }
 
-.content > div {
-	margin: 5rem 0 10rem 0;
-}
-
-.content section {
-	margin-top: 3rem;
+.content > div > h1 {
+	margin: 8rem 0 2rem 0;
+	text-align: center;
 }
 
 .content ol[type="1"] > li > header {
