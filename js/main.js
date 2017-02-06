@@ -223,26 +223,26 @@ $(function() {
 			}
 		})
 
-		var spanRegexp = /<span class="search-result">([^<])<\/span>/gi
-		console.log(previousResults)
-		previousResults.forEach(function(result) {
-			var target = document.getElementById(result.ref)
-			target.innerHTML = target.innerHTML.replace(spanRegexp, "$&")
-		})
+		// var spanRegexp = /<span class="search-result">([^<])<\/span>/gi
+		// console.log(previousResults)
+		// previousResults.forEach(function(result) {
+		// 	var target = document.getElementById(result.ref)
+		// 	target.innerHTML = target.innerHTML.replace(spanRegexp, "$&")
+		// })
 
-		if (results.length) {
-			var regexp = new RegExp(searchBar.value, 'gi')
-			hrefs.forEach(function(href, i) {
-				var target = document.getElementById(href.substr(1))
-				target.innerHTML = target.innerHTML.replace(regexp, "<span class='search-result'>$&</span>")
+		// if (results.length) {
+		// 	var regexp = new RegExp(searchBar.value, 'gi')
+		// 	hrefs.forEach(function(href, i) {
+		// 		var target = document.getElementById(href.substr(1))
+		// 		target.innerHTML = target.innerHTML.replace(regexp, "<span class='search-result'>$&</span>")
 
-				if (i === 0) {
-					window.scrollTo(0, target.offsetTop - 40)
-				}
-			})
-		}
+		// 		if (i === 0) {
+		// 			window.scrollTo(0, target.offsetTop - 40)
+		// 		}
+		// 	})
+		// }
 
-		previousResults = results
+		// previousResults = results
 	}
 
 	function romanizeTitle(title) {
