@@ -96,10 +96,12 @@ $(function() {
 		return section.title
 	}
 
+	var currentAnchorType
 	function headerForSection(section) {
 		var result
 		var id = parseInt(section.index)
 		if (section.type === 'part') {
+			currentAnchorType = section.anchors
 			result = "<h1>"
 			if (id) result += "PART " + romanize(id) + "<br>"
 			result += section.title.toUpperCase()
@@ -110,7 +112,7 @@ $(function() {
 			result += "</h1>"
 		} else if (section.type === 'rule') {
 			result = "<h3>Rule " + id + ". " + section.title + "</h3>"
-			result += "<a id=\"rcm-" + id + "\"></a>"
+			if (currentAnchorType) result += "<a id=\"" + currentAnchorType + "-" + id + "\"></a>"
 		} else if (section.type === 'article') {
 			result = "<h3>Article " + id + "&mdash;" + section.title + "</h3>"
 		} else if (section.type === 'appendix') {
@@ -151,6 +153,7 @@ $(function() {
 	var LIST_REGEXP = /<(\/?)list/g
 	var URL_REGEXP = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm
 	var RCM_REGEXP = /R\.C\.M\.\s*(\d+)((\(\w+\))*)/ig
+	var MILREVID_REGEXP = /Mil\.R\.Evid\.\s*(\d+)((\(\w+\))*)/ig
 	function contentize(html) {
 		return html.
 			replace(LIST_REGEXP, '<$1ol').
@@ -158,6 +161,12 @@ $(function() {
 			replace(RCM_REGEXP, function(string, rule, sections) {
 				sections = sections.replace(/\)\(/g, '-').replace(/\(|\)/g, '')
 				var path = ['rcm', rule]
+				if (sections) path.push(sections)
+				return '<a href="#' + path.join('-') + '">' + string + '</a>'
+			}).
+			replace(MILREVID_REGEXP, function(string, rule, sections) {
+				sections = sections.replace(/\)\(/g, '-').replace(/\(|\)/g, '')
+				var path = ['milrevid', rule]
 				if (sections) path.push(sections)
 				return '<a href="#' + path.join('-') + '">' + string + '</a>'
 			})
