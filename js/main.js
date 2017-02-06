@@ -46,7 +46,7 @@ $(function() {
 
 		$('body').scrollspy({
 			target: '[data-toc]',
-			offset: 150
+			offset: 180
 		})
 
 		var scroller = new FastScroll()
@@ -91,7 +91,7 @@ $(function() {
 			if (section.content) {
 				contentDiv.innerHTML += contentize(section.content)
 				fixListElements(contentDiv)
-				fixDiscussionElements(contentDiv)
+				// fixDiscussionElements(contentDiv)
 				fixTableElements(contentDiv)
 			}
 		}
@@ -115,6 +115,9 @@ $(function() {
 		}
 
 		var lastNode = renderSection(section)
+		setTimeout(function(lastNode) {
+			document.body.scrollTop = lastNode.offsetTop - 80
+		}.bind(null, lastNode))
 		lastRenderedSection = section
 
 		while (index < MCMflat.length - 1 && (
