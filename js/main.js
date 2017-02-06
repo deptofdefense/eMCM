@@ -13,11 +13,26 @@ $(function() {
 		window.MCM = JSON.parse(json)
 
 		renderNavItems(navContainer, MCM, true)
+		renderContentDivs(MCM)
+
+		var keys = Object.keys(MCM)
+		renderContentFor(keys[0])
+		renderContentFor(keys[1])
 
 		$('body').scrollspy({
 			target: '[data-toc]'
 		})
 	})
+
+	function renderContentFor(key) {
+		var contentDiv = document.getElementById(parameterize(key))
+		var html = contentize(MCM[key])
+		if (key.indexOf('_') === -1) {
+			contentDiv.innerHTML = renderPart(key, html)
+		}
+
+		fixListElements(contentDiv)
+	}
 
 	function renderPart(key, html) {
 		var result = "<h1 style='text-align: center'>"
@@ -29,21 +44,30 @@ $(function() {
 		return result
 	}
 
-	function renderNavItems(container, sections, renderChildren) {
+	function renderContentDivs(sections, keypath) {
+		if (!keypath) keypath = []
+
+		for (var key in sections) {
+			var value = sections[key]
+			var newKeypath = keypath.concat(key)
+
+			if (typeof value === 'string') {
+				var el = document.createElement('div')
+				el.id = parameterize(newKeypath.join('_'))
+				content.appendChild(el)
+			} else if (typeof value === 'object') {
+				renderContentDivs(value, newKeypath)
+			}
+		}
+	}
+
+	function renderNavItems(container, sections, root) {
 		container.innerHTML = ''
 
 		for (var key in sections) {
 			var value = sections[key]
-			var navItem = renderNavItem(key, renderChildren && typeof value !== 'string' && value)
+			var navItem = renderNavItem(key, root && typeof value !== 'string' && value)
 			container.appendChild(navItem)
-
-			if (renderChildren && typeof value === 'string') {
-				var wrapper = document.createElement('div')
-				wrapper.id = parameterize(key)
-				wrapper.innerHTML = renderPart(key, value)
-				fixListElements(wrapper)
-				content.appendChild(wrapper)
-			}
 		}
 	}
 
