@@ -145,7 +145,7 @@ $(function() {
 		lists && lists.forEach(function(list) {
 			var li
 			Array.prototype.forEach.call(list.children, function(child) {
-				if (child.nodeName.toLowerCase === 'li' && child.getAttribute('index')) {
+				if (child.nodeName.toLowerCase() === 'li' && child.getAttribute('index')) {
 					li = child
 				}
 			})
