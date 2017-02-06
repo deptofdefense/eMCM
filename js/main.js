@@ -72,8 +72,10 @@ $(function() {
 		})
 
 		window.onhashchange = function(event) {
-			event.preventDefault()
-			event.stopPropagation()
+			if (event) {
+				event.preventDefault()
+				event.stopPropagation()
+			}
 
 			var hash = location.hash.substr(1)
 			for (var i = 0, count = MCMflat.length; i < count; i++) {
@@ -83,6 +85,10 @@ $(function() {
 					return
 				}
 			}
+		}
+
+		if (location.hash.length > 1) {
+			window.onhashchange()
 		}
 
 		setTimeout(function() {
