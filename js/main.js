@@ -7,7 +7,7 @@ $(function() {
 	navContainer.removeChild(navItemProto)
 	subNavProto.parentNode.removeChild(subNavProto)
 
-	fetch('/toc.json', function(json) {
+	fetch('toc.json', function(json) {
 		window.MCM = JSON.parse(json)
 
 		var timeout = 0
