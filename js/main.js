@@ -132,14 +132,28 @@ $(function() {
 		'1': /[0-9]/,
 	}
 
+	var ALPHABET = ['a', 'b', 'c', 'd', 'e',
+                   'f', 'g', 'h', 'i', 'j',
+                   'k', 'l', 'm', 'n', 'o',
+                   'p', 'q', 'r', 's', 't',
+                   'u', 'v', 'w', 'x', 'y',
+                   'z']
+
 	function fixListElements(el) {
 		var lists = el.querySelectorAll('ol')
+		if (!lists) return
+
 		lists && lists.forEach(function(list) {
 			var li = list.querySelector('li')
 			var index = li.getAttribute('index')
 			for (var listType in LIST_TYPES) {
 				if (LIST_TYPES[listType].test(index)) {
 					list.type = listType
+					if (listType === '1') {
+						li.value = index
+					} else if (listType === 'a' || listType === 'A') {
+						li.value = ALPHABET.indexOf(index.toLowerCase()) + 1
+					}
 					break
 				}
 			}
