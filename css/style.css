@@ -12,8 +12,19 @@ a {
 	color: #323A44;
 }
 
-.container {
-	margin-top: 50px;
+body > header {
+	position: fixed;
+	width: 100%;
+	margin: 0;
+	padding: 15px 50px 0 50px;
+	z-index: 5;
+	background: white;
+	border-bottom: 1px solid #ddd;
+}
+
+body > .root {
+	position: absolute;
+	top: 70px;
 }
 
 .logo img {
@@ -44,6 +55,7 @@ input#searchbar {
 	font-family: "Helvetica", sans-serif;
 	font-weight: 600;
 	font-size: 20px;
+	margin-top: 10px;
 	padding-left: 20px;
 }
 
@@ -52,7 +64,6 @@ input#searchbar::-webkit-input-placeholder {
 	font-weight: 600;
 	font-size: 20px;
 	color: #D8D8D8;
-	padding-left: 20px;
 }
 
 .section-link {
@@ -118,9 +129,10 @@ input#searchbar::-webkit-input-placeholder {
 }
 
 .toc {
+	position: fixed;
 	width: 230px;
 	height: 100%;
-	margin-top: 50px;
+	margin-top: 40px;
 	overflow-y: auto;
 }
 
