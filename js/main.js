@@ -1,26 +1,48 @@
 $(function() {
-	// $('body').scrollspy({
-	// 	target: navSelector
-	// })
-
 	var navItemProto = document.querySelector('[data-nav-proto]')
+	var subNavProto = document.querySelector('[data-subnav-proto]')
 	var content = document.querySelector('[data-content]')
 
 	var navContainer = navItemProto.parentNode
 	navContainer.removeChild(navItemProto)
+	subNavProto.parentNode.removeChild(subNavProto)
 
 	fetch('/toc.json', function(json) {
 		window.MCM = JSON.parse(json)
 
-		renderNavItems(navContainer, MCM, true)
-
 		var timeout = 0
-		forEachRecursive(MCM, function(key, value, keypath) {
-			var keypath = keypath.join('_')
-			var param = parameterize(keypath)
-			var contentDiv = renderContentDiv(param)
-			setTimeout(renderContentInto.bind(null, contentDiv, keypath, value), timeout)
-			timeout += 100
+		forEachRecursive(MCM, function(section, chain) {
+			var title = titleForSection(section)
+			var id = parameterize(idForChain(chain))
+
+			if (chain.length > 1) var parent = chain[chain.length - 2]
+
+			if (chain.length < 4) {
+				section.navItem = renderNavItem(title, id)
+				if (parent) {
+					if (!parent.subNav) {
+						parent.subNav = subNavProto.cloneNode(true)
+						parent.navItem.appendChild(parent.subNav)
+					}
+
+					parent.subNav.appendChild(section.navItem)
+				} else {
+					navContainer.appendChild(section.navItem)
+				}
+			}
+
+			var contentDiv = renderContentDiv(id)
+
+			contentDiv.innerHTML = headerForSection(section)
+
+			if (section.content) {
+				setTimeout(function() {
+					contentDiv.innerHTML += contentize(section.content)
+					fixListElements(contentDiv)
+				}, timeout)
+
+				timeout += 100
+			}
 		})
 
 		$('body').scrollspy({
@@ -28,56 +50,62 @@ $(function() {
 		})
 	})
 
-	function renderContentInto(div, key, html) {
-		html = contentize(html)
-		if (key.indexOf('_') === -1) {
-			div.innerHTML = renderPart(key, html)
-		} else {
-			div.innerHTML = html
-		}
-
-		fixListElements(div)
+	function idForChain(chain) {
+		var id = chain.map(function(section) {
+			return section.type + '-' + (section.index || section._i)
+		}).join('_')
+		return parameterize(id)
 	}
 
-	function renderPart(key, html) {
-		var result = "<h1 style='text-align: center'>"
-		var id = parseInt(key)
-		if (id) result += "Part " + romanize(id) + "<br>"
-		result += key.split(' - ')[1].toUpperCase()
-		result += "</h1>"
-		result += html
+	var ROMAN_TITLE_TYPES = {
+		'part': ' - ',
+		'chapter': '. '
+	}
+
+	function titleForSection(section) {
+		var romanSeparator = ROMAN_TITLE_TYPES[section.type]
+		if (romanSeparator && section.index) {
+			return romanize(section.index) + romanSeparator + section.title
+		}
+
+		if (section.type === 'rule') {
+			return section.index + '. ' + section.title
+		}
+
+		return section.title
+	}
+
+	function headerForSection(section) {
+		var result
+		var id = parseInt(section.index)
+		if (section.type === 'part') {
+			result = "<h1 style='text-align: center'>"
+			if (id) result += "PART " + romanize(id) + "<br>"
+			result += section.title.toUpperCase()
+			result += "</h1>"
+		} else if (section.type === 'chapter') {
+			result = "<h2 style='text-align: center'>"
+			result += "CHAPTER " + romanize(id) + ". " + section.title.toUpperCase()
+			result += "</h2>"
+		} else if (section.type === 'rule') {
+			result = "<h3>Rule " + id + ". " + section.title
+		} else {
+			result = "<h3>" + section.title + "</h3>"
+		}
 		return result
 	}
 
 	function renderContentDiv(key) {
 		var el = document.createElement('div')
-		el.id = parameterize(key)
+		el.id = key
 		content.appendChild(el)
 		return el
 	}
 
-	function renderNavItems(container, sections, root) {
-		container.innerHTML = ''
-
-		for (var key in sections) {
-			var value = sections[key]
-			var navItem = renderNavItem(key, root && typeof value !== 'string' && value)
-			container.appendChild(navItem)
-		}
-	}
-
-	function renderNavItem(title, children) {
+	function renderNavItem(title, href) {
 		var item = navItemProto.cloneNode(true)
-		item.querySelector('[data-title]').innerHTML = romanizeTitle(title)
-		item.querySelector('[data-target]').href = '#' + parameterize(title)
-
-		var subNav = item.querySelector('[data-subnav]')
-		if (children) {
-			renderNavItems(subNav, children)
-		} else {
-			item.removeChild(subNav)
-		}
-
+		item.querySelector('[data-title]').innerHTML = title
+		item.querySelector('[data-target]').href = '#' + href
 		return item
 	}
 
@@ -141,16 +169,15 @@ $(function() {
 		return roman
 	}
 
-	function forEachRecursive(object, func, keypath) {
-		if (!keypath) keypath = []
+	function forEachRecursive(array, func, chain) {
+		if (!chain) chain = []
 
-		Object.keys(object).forEach(function(key) {
-			var newKeypath = keypath.concat(key)
-			var value = object[key]
-			if (typeof value === 'object') {
-				forEachRecursive(value, func, newKeypath)
-			} else {
-				func(key, value, newKeypath)
+		array.forEach(function(object, i) {
+			object._i = i
+			var newChain = chain.concat(object)
+			func(object, newChain)
+			if (object.children) {
+				forEachRecursive(object.children, func, newChain)
 			}
 		})
 	}
