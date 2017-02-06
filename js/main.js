@@ -52,6 +52,7 @@ $(function() {
 					contentDiv.innerHTML += contentize(section.content)
 					fixListElements(contentDiv)
 					fixDiscussionElements(contentDiv)
+					fixTableElements(contentDiv)
 				}, timeout)
 
 				timeout += 10
@@ -228,6 +229,13 @@ $(function() {
 			var parent = disc.parentNode
 			disc.style.top = parent.offsetTop + 'px'
 			asidesContainer.appendChild(disc)
+		})
+	}
+
+	function fixTableElements(el) {
+		var tables = el.querySelectorAll('table')
+		tables && tables.forEach(function(table) {
+			table.className += "table table-bordered table-condensed"
 		})
 	}
 
