@@ -42,7 +42,6 @@ $(function() {
 			}
 
 			section.node = renderContentDiv(id)
-			content.appendChild(section.node)
 		})
 
 		renderViewableRangeForSection(MCMflat[0])
@@ -111,7 +110,7 @@ $(function() {
 			if (section.content) {
 				contentDiv.innerHTML += contentize(section.content)
 				fixListElements(contentDiv)
-				// fixDiscussionElements(contentDiv)
+				fixDiscussionElements(contentDiv)
 				fixTableElements(contentDiv)
 			}
 		}
@@ -205,9 +204,16 @@ $(function() {
 	}
 
 	function renderContentDiv(key) {
-		var el = document.createElement('div')
-		el.id = key
-		return el
+		var row = document.createElement('div')
+		row.className = 'row'
+		row.id = key
+
+		var col = document.createElement('div')
+		col.className = 'col-xs-10'
+		row.appendChild(col)
+		content.appendChild(row)
+
+		return col
 	}
 
 	function renderNavItem(title, href) {
@@ -311,9 +317,21 @@ $(function() {
 	function fixDiscussionElements(el) {
 		var els = el.querySelectorAll('discussion')
 		forEach(els, function(disc) {
-			var parent = disc.parentNode
-			disc.style.top = parent.offsetTop + 'px'
-			asidesContainer.appendChild(disc)
+			var row = document.createElement('div')
+			row.className = 'row'
+
+			var referenceNode = disc.parentNode
+			referenceNode.parentNode.insertBefore(row, referenceNode)
+
+			var col = document.createElement('div')
+			col.className = 'col-xs-7'
+			col.appendChild(referenceNode)
+			row.appendChild(col)
+
+			var newCol = document.createElement('div')
+			newCol.className = 'col-xs-5'
+			newCol.appendChild(disc)
+			row.appendChild(newCol)
 		})
 	}
 
