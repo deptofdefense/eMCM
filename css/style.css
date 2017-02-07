@@ -21,8 +21,7 @@ body > header {
 }
 
 body > .root {
-	position: absolute;
-	top: 80px;
+	padding-top: 132px;
 }
 
 .beta-banner {
@@ -53,7 +52,7 @@ body > .root {
 .nav-list {
 	list-style: none;
 	font-family: "Helvetica", sans-serif;
-	font-weight:600;
+	font-weight: 600;
 	font-size: 16px;
 	color: #323A44;
 	text-align:right;
@@ -85,6 +84,11 @@ input#searchbar::-webkit-input-placeholder {
 }
 
 .search-result {
+	border: 1px solid #ccc;
+	cursor: pointer;
+}
+
+.search-result .highlight {
 	background: yellow;
 }
 
@@ -125,10 +129,6 @@ input#searchbar::-webkit-input-placeholder {
 	background-color: #555;
 }
 
-.header {
-	margin-top: 30px;
-}
-
 .footnote {
 	width: 100%;
 	transition: all 0.5s ease-in-ease-out;
@@ -149,7 +149,7 @@ input#searchbar::-webkit-input-placeholder {
 	position: fixed;
 	width: 230px;
 	height: 100%;
-	margin-top: 60px;
+	margin-top: 12px;
 	overflow-y: auto;
 }
 
@@ -190,6 +190,7 @@ input#searchbar::-webkit-input-placeholder {
 
 .content {
 	text-align: justify;
+	margin-top: -60px;
 }
 
 .content > .row {

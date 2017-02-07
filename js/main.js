@@ -1,19 +1,17 @@
-document.querySelector('[data-no-results]').style.display = 'none'
-
 $(function() {
 	var navItemProto = document.querySelector('[data-nav-proto]')
 	var subNavProto = document.querySelector('[data-subnav-proto]')
 	var content = document.querySelector('[data-content]')
 
-	var asidesContainer = document.querySelector('[data-asides]')
 	var navContainer = navItemProto.parentNode
 	navContainer.removeChild(navItemProto)
 	subNavProto.parentNode.removeChild(subNavProto)
 
 	var searchIndex = elasticlunr(function() {
-		this.addField('title')
+		this.addField('title', {boost: 5})
 		this.addField('content')
 		this.setRef('id')
+		this.saveDocument(false)
 	})
 	window.searchIndex = searchIndex
 
@@ -91,20 +89,28 @@ $(function() {
 		}
 
 		setTimeout(function() {
-			forEach(MCMflat, function(section) {
+			forEach(MCMflat, function(section, i) {
 				if (section.content) {
-					searchIndex.addDoc({id: section._id, title: section._title, content: section.content})
+					searchIndex.addDoc({id: i, title: section._title, content: section.content})
 				}
 			})
 		}, 100)
 	})
 
-	var searchTimeout
-	$('#searchbar').on('input', performSearch)
+	var searchValue
+	$('#searchbar').on('keydown', function(event) {
+		if (event.key === 'Enter' && searchValue !== searchBar.value) {
+			searchValue = searchBar.value
+			performSearch()
+		} else if (event.key === 'Escape') {
+			searchValue = searchBar.value = ''
+			performSearch()
+		}
+	})
 
-	function renderSection(section) {
-		var contentDiv = section.node
-		if (!section.firstChild) {
+	function renderSection(section, contentDiv) {
+		contentDiv = contentDiv || section.node
+		if (!contentDiv.firstChild) {
 			contentDiv.innerHTML = headerForSection(section)
 
 			if (section.content) {
@@ -345,14 +351,25 @@ $(function() {
 
 	var searchBar = document.getElementById('searchbar')
 	var noResults = document.querySelector('[data-no-results]')
-	var previousResults = []
+
+	var cachedContent
 	function performSearch() {
-		var results = searchIndex.search(searchBar.value)
-		var hrefs = results.map(function(result) { return '#' + result.ref }).sort()
+		if (!searchBar.value && cachedContent) {
+			content.innerHTML = ''
+			content.appendChild(cachedContent)
+			content = cachedContent
+		} else {
+			var results = searchIndex.search(searchBar.value).map(function(result) { return MCMflat[result.ref] })
+			var hrefs = results.map(function(result) { return '#' + result._id })
+		}
+
+		if (!cachedContent) {
+			cachedContent = content
+			content = content.parentNode
+			content.removeChild(cachedContent)
+		}
 
 		noResults.style.display = searchBar.value && !results.length ? 'block' : 'none'
-		content.style.display = !searchBar.value || results.length ? 'block' : 'none'
-		asidesContainer.style.display = !searchBar.value || results.length ? 'block' : 'none'
 
 		forEach(document.querySelectorAll('.toc .nav li a'), function(a) {
 			var isVisible = !searchBar.value || hrefs.indexOf(a.getAttribute('href')) !== -1
@@ -372,19 +389,29 @@ $(function() {
 		// 	target.innerHTML = target.innerHTML.replace(spanRegexp, "$&")
 		// })
 
-		// if (results.length) {
-		// 	var regexp = new RegExp(searchBar.value, 'gi')
-		// 	hrefs.forEach(function(href, i) {
-		// 		var target = document.getElementById(href.substr(1))
-		// 		target.innerHTML = target.innerHTML.replace(regexp, "<span class='search-result'>$&</span>")
+		if (results && results.length) {
+			var regexp = new RegExp(searchBar.value, 'gi')
+			forEach(results, function(section) {
+				var index = section.content.indexOf(searchBar.value)
+				if (index === -1)
+					return
 
-		// 		if (i === 0) {
-		// 			window.scrollTo(0, target.offsetTop - 40)
-		// 		}
-		// 	})
-		// }
+				var node = document.createElement('div')
+				node.className = 'search-result'
+				node.innerHTML += headerForSection(section)
+				node.addEventListener('click', function() {
+					searchBar.value = ''
+					performSearch()
+					location.hash = section._id
+				})
 
-		// previousResults = results
+				node.innerHTML += section.content.substr(Math.max(index - 100, 0), 100)
+				node.innerHTML += "<span class='highlight'>" + searchBar.value + "</span>"
+				node.innerHTML += section.content.substr(index + searchBar.value.length, 100)
+
+				content.appendChild(node)
+			})
+		}
 	}
 
 	function romanizeTitle(title) {
