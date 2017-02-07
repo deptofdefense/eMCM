@@ -8,9 +8,9 @@ $(function() {
 	subNavProto.parentNode.removeChild(subNavProto)
 
 	var searchIndex = elasticlunr(function() {
-		this.addField('title', {boost: 5})
+		this.addField('_title', {boost: 5})
 		this.addField('content')
-		this.setRef('id')
+		this.setRef('arrayIndex')
 		this.saveDocument(false)
 	})
 	window.searchIndex = searchIndex
@@ -91,7 +91,8 @@ $(function() {
 		setTimeout(function() {
 			forEach(MCMflat, function(section, i) {
 				if (section.content) {
-					searchIndex.addDoc({id: i, title: section._title, content: section.content})
+					section.arrayIndex = i
+					searchIndex.addDoc(section)
 				}
 			})
 		}, 100)
@@ -356,27 +357,32 @@ $(function() {
 
 	var cachedContent
 	function performSearch() {
-		if (!searchBar.value && cachedContent) {
+		var query = searchBar.value
+
+		if (!query && cachedContent) {
 			content.innerHTML = ''
 			content.appendChild(cachedContent)
 			content = cachedContent
-		} else {
-			var results = searchIndex.search(searchBar.value).map(function(result) { return MCMflat[result.ref] })
+			cachedContent = null
+		} else if (query) {
+			var results = searchIndex.search(query).sort().map(function(result) { return MCMflat[result.ref] })
 			var hrefs = results.map(function(result) { return '#' + result._id })
 		}
 
-		if (!cachedContent) {
+		if (query && !cachedContent) {
 			cachedContent = content
 			content = content.parentNode
 			content.removeChild(cachedContent)
+		} else if (results) {
+			content.innerHTML = ""
 		}
 
-		noResults.style.display = searchBar.value && !results.length ? 'block' : 'none'
+		noResults.style.display = query && !results.length ? 'block' : 'none'
 
 		forEach(document.querySelectorAll('.toc .nav li a'), function(a) {
-			var isVisible = !searchBar.value || hrefs.indexOf(a.getAttribute('href')) !== -1
+			var isVisible = !query || hrefs.indexOf(a.getAttribute('href')) !== -1
 			a.parentNode.style.display = isVisible ? 'block' : 'none'
-			if (isVisible && searchBar.value) {
+			if (isVisible && query) {
 				while (a = a.parentNode) {
 					if (a.nodeName === 'UL' || a.nodeName === 'LI')
 						a.style.display = 'block'
@@ -384,17 +390,10 @@ $(function() {
 			}
 		})
 
-		// var spanRegexp = /<span class="search-result">([^<])<\/span>/gi
-		// console.log(previousResults)
-		// previousResults.forEach(function(result) {
-		// 	var target = document.getElementById(result.ref)
-		// 	target.innerHTML = target.innerHTML.replace(spanRegexp, "$&")
-		// })
-
+		// render highlighted results
 		if (results && results.length) {
-			var regexp = new RegExp(searchBar.value, 'gi')
 			forEach(results, function(section) {
-				var index = section.content.indexOf(searchBar.value)
+				var index = section.content.indexOf(query)
 				if (index === -1)
 					return
 
@@ -407,12 +406,29 @@ $(function() {
 					location.hash = section._id
 				})
 
-				node.innerHTML += section.content.substr(Math.max(index - 100, 0), 100)
-				node.innerHTML += "<span class='highlight'>" + searchBar.value + "</span>"
-				node.innerHTML += section.content.substr(index + searchBar.value.length, 100)
+				var html = ''
+				if (index > 50) {
+					var lastTagIndex = section.content.lastIndexOf('>', index - 50) + 1
+					html += section.content.substr(lastTagIndex, index - lastTagIndex)
+				} else {
+					html += section.content.substr(Math.max(index - 200, 0), 200)
+				}
+
+				html += "<span class=\"highlight\">" + query + "</span>"
+
+				var nextTagIndex = section.content.indexOf('<', index + query.length + 50)
+				if (nextTagIndex) {
+					html += section.content.substr(index + query.length, nextTagIndex - (index + query.length))
+				} else {
+					html += section.content.substr(index + query.length, 200)
+				}
+
+				node.innerHTML += contentize(html)
 
 				content.appendChild(node)
 			})
+
+			document.body.scrollTop = 0
 		}
 	}
 

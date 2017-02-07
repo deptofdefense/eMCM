@@ -84,6 +84,7 @@ input#searchbar::-webkit-input-placeholder {
 }
 
 .search-result {
+	margin-bottom: 24px;
 	border: 1px solid #ccc;
 	cursor: pointer;
 }
