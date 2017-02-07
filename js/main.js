@@ -98,16 +98,7 @@ $(function() {
 		}, 100)
 	})
 
-	var searchValue
-	$('#searchbar').on('keydown', function(event) {
-		if (event.key === 'Enter' && searchValue !== searchBar.value) {
-			searchValue = searchBar.value
-			performSearch()
-		} else if (event.key === 'Escape') {
-			searchValue = searchBar.value = ''
-			performSearch()
-		}
-	})
+	document.getElementById('searchbar').addEventListener('input', performSearch)
 
 	function renderSection(section, contentDiv) {
 		contentDiv = contentDiv || section.node
