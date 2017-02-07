@@ -149,6 +149,8 @@ $(function() {
 				lastRenderedSection = MCMflat[++index]
 				lastNode = renderSection(lastRenderedSection)
 			}
+
+		$('body').scrollspy('refresh')
 	}
 
 	function idForChain(chain) {
