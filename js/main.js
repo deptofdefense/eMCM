@@ -74,6 +74,11 @@ $(function() {
 				event.stopPropagation()
 			}
 
+			if (cachedContent) {
+				searchBar.value = ''
+				performSearch()
+			}
+
 			var hash = location.hash.substr(1)
 			for (var i = 0, count = MCMflat.length; i < count; i++) {
 				var section = MCMflat[i]
@@ -392,8 +397,6 @@ $(function() {
 				node.className = 'search-result'
 				node.innerHTML += headerForSection(section)
 				node.addEventListener('click', function() {
-					searchBar.value = ''
-					performSearch()
 					location.hash = section._id
 				})
 
