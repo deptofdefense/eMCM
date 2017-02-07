@@ -289,6 +289,7 @@ $(function() {
 						for (var listType in LIST_TYPES) {
 							if (LIST_TYPES[listType].test(index)) {
 								list.type = listType
+								break
 							}
 						}
 					}
