@@ -21,7 +21,7 @@ $(function() {
 
 		forEachRecursive(MCM, function(section, chain) {
 			var title = section._title = titleForSection(section)
-			var id = section._id = parameterize(idForChain(chain))
+			var id = section._id = idForChain(chain)
 
 			if (chain.length > 1) var parent = chain[chain.length - 2]
 
@@ -74,16 +74,32 @@ $(function() {
 				event.stopPropagation()
 			}
 
+			// clear search results if we have any
 			if (cachedContent) {
 				searchBar.value = ''
 				performSearch()
 			}
 
 			var hash = location.hash.substr(1)
+			if (hash.indexOf('rcm-') === 0) {
+				var fullHash = hash
+				hash = hash.match(/(rcm-\d+)/)[1]
+			}
+
 			for (var i = 0, count = MCMflat.length; i < count; i++) {
 				var section = MCMflat[i]
 				if (section._id === hash) {
-					renderViewableRangeForSection(section)
+					renderViewableRangeForSection(section, false)
+					if (fullHash) {
+						setTimeout(function() {
+							var targetElement = document.getElementById(fullHash)
+							if (targetElement) {
+								targetElement.scrollIntoView(true)
+								document.body.scrollTop -= 160
+							}
+						})
+					}
+
 					return
 				}
 			}
@@ -124,7 +140,7 @@ $(function() {
 	var firstRenderedSection
 	var lastRenderedSection
 
-	function renderViewableRangeForSection(section) {
+	function renderViewableRangeForSection(section, jumpTo) {
 		var index = MCMflat.indexOf(section)
 		if (index > 0) {
 			firstRenderedSection = MCMflat[index - 1]
@@ -134,9 +150,12 @@ $(function() {
 		}
 
 		var lastNode = renderSection(section)
-		setTimeout(function(lastNode) {
-			document.body.scrollTop = lastNode.offsetTop - 80
-		}.bind(null, lastNode))
+		if (jumpTo !== false) {
+			setTimeout(function(lastNode) {
+				document.body.scrollTop = lastNode.offsetTop - 80
+			}.bind(null, lastNode))
+		}
+
 		lastRenderedSection = section
 
 		while (index < MCMflat.length - 1 && (
@@ -151,9 +170,19 @@ $(function() {
 	}
 
 	function idForChain(chain) {
-		var id = chain.map(function(section) {
-			return section.type + '-' + (section.index || section._i)
-		}).join('_')
+		var section = chain[chain.length - 1]
+		if (section.type === 'part')
+			currentAnchorType = section.anchors
+
+		var id
+		if (currentAnchorType && chain.length > 2) {
+			id = currentAnchorType + '-' + chain.slice(2).map(function(subsection) {return subsection.index}).join('-')
+		} else {
+			id = chain.map(function(section) {
+				return section.type + '-' + (section.index || section._i)
+			}).join('_')
+		}
+
 		return parameterize(id)
 	}
 
@@ -184,7 +213,6 @@ $(function() {
 		var result
 		var id = parseInt(section.index)
 		if (section.type === 'part') {
-			currentAnchorType = section.anchors
 			result = "<h1>"
 			if (id) result += "PART " + romanize(id) + "<br>"
 			result += section.title.toUpperCase()
@@ -195,7 +223,7 @@ $(function() {
 			result += "</h1>"
 		} else if (section.type === 'rule') {
 			result = "<h3>Rule " + id + ". " + section.title + "</h3>"
-			if (currentAnchorType) result += "<a id=\"" + currentAnchorType + "-" + id + "\"></a>"
+			// if (currentAnchorType) result += "<a id=\"" + currentAnchorType + "-" + id + "\"></a>"
 		} else if (section.type === 'article') {
 			result = "<h3>Article " + id + "&mdash;" + section.title + "</h3>"
 		} else if (section.type === 'appendix') {
@@ -305,14 +333,11 @@ $(function() {
 						li.value = ALPHABET.indexOf(index.toLowerCase()) + 1
 					}
 
-					var parent = li
-					while (parent = parent.parentNode) {
-						var a = $(parent).children('a[id]')
-						if (a.length) {
-							var target = document.createElement('a')
-							target.id = a[0].id + '-' + index
-							li.insertBefore(target, li.firstChild)
-							return
+					var el = li
+					while (el = el.parentNode) {
+						if (el.id && el.id.indexOf('rcm-') === 0) {
+							li.id = el.id + '-' + li.getAttribute('index')
+							break
 						}
 					}
 				}
