@@ -387,7 +387,7 @@ $(function() {
 	var searchBar = document.getElementById('searchbar')
 	var noResults = document.querySelector('[data-no-results]')
 
-	var RULE_REGEXP = /^([rea])(\d+)(\w*)/
+	var RULE_REGEXP = /^([rea])(\d+)(\w*)/i
 	var RULE_PART_REGEXP = /([\d|[a-z]|[A-Z]]+)/g
 	var RULE_CODES = {r: 'rcm', e: 'milrevid', a: 'art'}
 
@@ -399,7 +399,7 @@ $(function() {
 		if (ruleMatch) {
 			query = null
 
-			var hash = [RULE_CODES[ruleMatch[1]], ruleMatch[2]]
+			var hash = [RULE_CODES[ruleMatch[1].toLowerCase()], ruleMatch[2]]
 			if (ruleMatch[3]) {
 				var partMatches = ruleMatch[3].match(RULE_PART_REGEXP)
 				hash = hash.concat(partMatches)
