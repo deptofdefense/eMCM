@@ -81,9 +81,10 @@ $(function() {
 			}
 
 			var hash = location.hash.substr(1)
-			if (hash.indexOf('rcm-') === 0) {
+			var prefix = hash.match(HASH_PREFIX_REGEXP)
+			if (prefix) {
 				var fullHash = hash
-				hash = hash.match(/(rcm-\d+)/)[1]
+				hash = prefix[1]
 			}
 
 			for (var i = 0, count = MCMflat.length; i < count; i++) {
@@ -171,12 +172,20 @@ $(function() {
 
 	function idForChain(chain) {
 		var section = chain[chain.length - 1]
-		if (section.type === 'part')
+		if (section.type === 'part') {
 			currentAnchorType = section.anchors
+		}
+
+		for (var i = 0, count = chain.length; i < count; i++) {
+			if (chain[i].type !== 'chapter' && chain[i].type !== 'part') {
+				var startIndex = i
+				break
+			}
+		}
 
 		var id
-		if (currentAnchorType && chain.length > 2) {
-			id = currentAnchorType + '-' + chain.slice(2).map(function(subsection) {return subsection.index}).join('-')
+		if (currentAnchorType && typeof startIndex !== 'undefined') {
+			id = currentAnchorType + '-' + chain.slice(startIndex).map(function(subsection) {return subsection.index}).join('-')
 		} else {
 			id = chain.map(function(section) {
 				return section.type + '-' + (section.index || section._i)
@@ -312,6 +321,8 @@ $(function() {
                    'u', 'v', 'w', 'x', 'y',
                    'z']
 
+	var HASH_PREFIX_REGEXP = /^((rcm|milrevid|art)-\d+)/
+
 	function fixListElements(el) {
 		var lists = el.querySelectorAll('ol')
 		forEach(lists, function(list) {
@@ -335,7 +346,7 @@ $(function() {
 
 					var el = li
 					while (el = el.parentNode) {
-						if (el.id && el.id.indexOf('rcm-') === 0) {
+						if (el.id && el.id.match(HASH_PREFIX_REGEXP)) {
 							li.id = el.id + '-' + li.getAttribute('index')
 							break
 						}
