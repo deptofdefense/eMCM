@@ -24,6 +24,18 @@ body > .root {
 	padding-top: 132px;
 }
 
+@media (max-width: 768px) {
+	body > header {
+		padding: 0;
+	}
+	body > .root {
+		padding-top: 182px;
+	}
+	.toc {
+		display: none;
+	}
+}
+
 .beta-banner {
 	position: absolute;
 	top: 0;

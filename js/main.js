@@ -251,7 +251,7 @@ $(function() {
 		row.id = key
 
 		var col = document.createElement('div')
-		col.className = 'col-xs-10'
+		col.className = 'col-xs-12 col-sm-10'
 		row.appendChild(col)
 		content.appendChild(row)
 
@@ -366,12 +366,12 @@ $(function() {
 			referenceNode.parentNode.insertBefore(row, referenceNode)
 
 			var col = document.createElement('div')
-			col.className = 'col-xs-7'
+			col.className = 'col-xs-12 col-sm-7'
 			col.appendChild(referenceNode)
 			row.appendChild(col)
 
 			var newCol = document.createElement('div')
-			newCol.className = 'col-xs-5'
+			newCol.className = 'col-xs-12 col-sm-5'
 			newCol.appendChild(disc)
 			row.appendChild(newCol)
 		})
