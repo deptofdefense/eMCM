@@ -387,9 +387,27 @@ $(function() {
 	var searchBar = document.getElementById('searchbar')
 	var noResults = document.querySelector('[data-no-results]')
 
+	var RULE_REGEXP = /^([rea])(\d+)(\w*)/
+	var RULE_PART_REGEXP = /([\d|[a-z]|[A-Z]]+)/g
+	var RULE_CODES = {r: 'rcm', e: 'milrevid', a: 'art'}
+
 	var cachedContent
 	function performSearch() {
 		var query = searchBar.value
+
+		var ruleMatch = query.match(RULE_REGEXP)
+		if (ruleMatch) {
+			query = null
+
+			var hash = [RULE_CODES[ruleMatch[1]], ruleMatch[2]]
+			if (ruleMatch[3]) {
+				var partMatches = ruleMatch[3].match(RULE_PART_REGEXP)
+				hash = hash.concat(partMatches)
+			}
+
+			location.hash = hash.join('-')
+			searchBar.focus()
+		}
 
 		if (!query && cachedContent) {
 			content.innerHTML = ''
