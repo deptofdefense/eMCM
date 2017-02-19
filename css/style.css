@@ -214,7 +214,7 @@ input#searchbar::-webkit-input-placeholder {
 	text-align: center;
 }
 
-.content ol[type="1"] > li > header {
+#part-1 ol[type="1"] > li > header {
 	font-weight: bold;
 }
 
