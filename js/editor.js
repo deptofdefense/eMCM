@@ -1,4 +1,4 @@
-$(function() {
+document.addEventListener('DOMContentLoaded', function() {
 	var PARTS = []
 	var SELECTED_PART, SELECTED_CHAPTER, SELECTED_RULE
 
@@ -24,7 +24,7 @@ $(function() {
 
 			$(chaptersSelect).trigger('change')
 		} else {
-			cm.setValue(part.content)
+			editor.setValue(part.content)
 		}
 	})
 
@@ -43,23 +43,40 @@ $(function() {
 
 			$(rulesSelect).trigger('change')
 		} else {
-			cm.setValue(chapter.content)
+			editor.setValue(chapter.content)
 		}
 	})
 
 	rulesSelect.addEventListener('change', function(event) {
 		SELECTED_RULE = SELECTED_CHAPTER.children[rulesSelect.value]
-		cm.setValue(SELECTED_RULE.content)
+		editor.updateOptions({value: SELECTED_RULE.content})
 	})
 
 	var preview = document.getElementById('preview')
 
-	var cm = CodeMirror(document.getElementById('editor'), {value: "Loading...", mode: 'xml', lineNumbers: true, lineWrapping: true})
-	cm.on('change', function() {
-		var body = preview.contentWindow.document.body
-		body.innerHTML = contentize(cm.getValue())
-		fixListElements(body)
-	})
+	var editor
+	require.config({ paths: { 'vs': '/vs' }});
+    require(['vs/editor/editor.main'], function() {
+        editor = monaco.editor.create(document.getElementById('editor'), {
+            value: PARTS ? PARTS[0].content : 'Loading...',
+            language: 'html',
+            folding: true,
+            formatOnPaste: true,
+            renderIndentGuides: true,
+            renderLineHighlight: 'all',
+            lineHeight: 22,
+            scrollBeyondLastLine: false,
+            useTabStops: true,
+            wrappingColumn: 0,
+            wrappingIndent: 'same'
+        })
+
+        editor.onDidChangeModelContent(function() {
+			var body = preview.contentWindow.document.body
+			body.innerHTML = contentize(editor.getValue())
+			fixListElements(body)
+		})
+    })
 
 	fetch('toc.json').then(function(response) {
 		return response.json()
@@ -84,7 +101,9 @@ $(function() {
 			// }
 		})
 
-		cm.setValue(data[0].content)
+		if (editor) {
+			editor.setValue(setValue(data[0].content))
+		}
 	})
 
 	var REGEXP_TRANSFORMS = [
