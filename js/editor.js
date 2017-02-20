@@ -50,14 +50,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	var toc = document.getElementById('toc')
+	var tocProto = document.getElementById('toc-proto')
+	toc.removeChild(tocProto)
+
 	function makeTocItem(part, i) {
 		if (part.children) {
 			forEach(part.children, function (child, i) {
 				makeTocItem(child, i)
 			})
 		} else {
-			var li = document.createElement('li')
-			li.innerHTML = part.title
+			var li = tocProto.cloneNode(true)
+			var a = li.querySelector('a')
+			a.innerHTML = part.title
+			a.href = idForChain([a.title])
 			toc.appendChild(li)
 		}
 	}
