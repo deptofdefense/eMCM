@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
 				updatePreview()
 			})
 
+			var resize = debounce(editor.layout.bind(editor), 100)
+			window.addEventListener('resize', resize)
+
 			if (PARTS) {
 				selectPart(PARTS[0])
 			}

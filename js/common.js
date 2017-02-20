@@ -249,3 +249,14 @@ function forEach(array, func) {
 	if (!array) { return }
 	Array.prototype.forEach.call(array, func)
 }
+
+function debounce(func, delay) {
+	var timeout
+	return function() {
+		if (timeout) {
+			clearTimeout(timeout)
+		}
+
+		timeout = setTimeout(func, delay)
+	}
+}
