@@ -76,9 +76,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		updatePreview()
 	}
 
+	var previewFrame = document.getElementById('preview')
 	function updatePreview() {
-		return
-		var body = preview.contentWindow.document.body
+		var body = previewFrame.contentWindow.document.getElementById('content')
 		body.innerHTML = contentize(editor.getValue())
 		fixListElements(body)
 	}
