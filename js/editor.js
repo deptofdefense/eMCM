@@ -84,6 +84,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		var li = tocProto.cloneNode(true)
 		li.removeAttribute('id')
+		part.navItem = li
+
 		var a = li.querySelector('a')
 		a.innerHTML = titleForSection(part)
 		parent.appendChild(li)
@@ -104,9 +106,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function selectPart(part) {
+		if (selectedPart) {
+			selectedPart.navItem.classList.remove('selected')
+		}
+
 		selectedPart = part
-		editor.setValue(part.content)
-		updatePreview()
+
+		if (selectedPart) {
+			selectedPart.navItem.classList.add('selected')
+			editor.setValue(selectedPart.content)
+			updatePreview()
+		}
 	}
 
 	var previewFrame = document.getElementById('preview')

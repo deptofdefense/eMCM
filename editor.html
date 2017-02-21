@@ -41,11 +41,21 @@
 		}
 
 		.nav li {
-			margin-left: 0.8rem;
+			padding-left: 0.8rem;
+		}
+
+		.nav li.selected {
+			background: linear-gradient(0deg, #8e8e8e, #b3b3b3);
+			border: 1px solid #a7a7a7;
+		}
+
+		.nav li.selected a {
+			color: #fff;
+			font-weight: bold;
 		}
 
 		.nav li.has-children {
-			margin-left: 0.1rem;
+			padding-left: 0.1rem;
 		}
 
 		.nav li.has-children > a {
