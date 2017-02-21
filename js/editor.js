@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		wrappingIndent: 'same'
 	}
 
-	var PARTS
+	var PARTS, KEYED_PARTS
 	var selectedPart
 
 	loadEditor()
@@ -38,9 +38,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		})
 	}
 
+	var toc
+
 	function loadToc() {
+		toc = document.getElementById('toc')
+
 		fetch('toc.json', function(json) {
 			PARTS = JSON.parse(json)
+			KEYED_PARTS = arrayToHash(PARTS, 'children')
 
 			forEach(PARTS, function(part, i) {
 				makeTocItem(part, i)
@@ -51,22 +56,23 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		})
 
-		document.body.addEventListener('click', function(event) {
+		toc.addEventListener('click', function(event) {
 			var target = event.target
-			while (target !== document.body) {
-				if (target.classList.contains('has-children')) {
-					target.classList.toggle('expanded')
-					event.stopPropagation()
-					event.preventDefault()
-					return
-				}
+			if (target.tagName !== 'A') {
+				return
+			}
 
-				target = target.parentNode
+			var href = target.getAttribute('href')
+			if (href === '#') {
+				target.parentNode.classList.toggle('expanded')
+				event.stopPropagation()
+				event.preventDefault()
+			} else if (href.length > 1) {
+				selectPart(KEYED_PARTS[href.substr(1)])
 			}
 		})
 	}
 
-	var toc = document.getElementById('toc')
 	var tocProto = document.getElementById('toc-proto')
 	toc.removeChild(tocProto)
 
@@ -79,11 +85,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		li.removeAttribute('id')
 		var a = li.querySelector('a')
 		a.innerHTML = titleForSection(part)
-		a.href = idForChain([a.title])
 		parent.appendChild(li)
 
 		if (part.children) {
 			li.classList.add('has-children')
+			a.setAttribute('href', '#')
 
 			var ul = document.createElement('ul')
 			li.appendChild(ul)
@@ -91,6 +97,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			forEach(part.children, function (child, i) {
 				makeTocItem(child, i, ul)
 			})
+		} else {
+			a.setAttribute('href', '#' + part.id)
 		}
 	}
 

@@ -245,6 +245,26 @@ function flattenArray(array, childrenKey, result) {
 	return result
 }
 
+function arrayToHash(array, childrenKey, result, chain) {
+	if (!array) { return result }
+	if (!result) { result = {} }
+	if (!chain) { chain = [] }
+
+	forEach(array, function(object, i) {
+		var newChain = chain.concat(object)
+		if (!object._i) { object._i = i }
+		if (!object.id) { object.id = idForChain(newChain) }
+		result[object.id] = object
+
+		var children = childrenKey ? object[childrenKey] : object
+		if (Array.isArray(children)) {
+			arrayToHash(children, childrenKey, result, newChain)
+		}
+	})
+
+	return result
+}
+
 function forEach(array, func) {
 	if (!array) { return }
 	Array.prototype.forEach.call(array, func)
