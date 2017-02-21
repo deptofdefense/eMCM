@@ -118,47 +118,4 @@ document.addEventListener('DOMContentLoaded', function() {
 		body.innerHTML = contentize(editor.getValue())
 		fixListElements(body)
 	}
-
-	// partsSelect.addEventListener('change', function(event) {
-	// 	var part = PARTS[partsSelect.value]
-	// 	SELECTED_PART = part
-	// 	chaptersSelect.style.display = part.children ? 'block' : 'none'
-	// 	if (part.children) {
-	// 		chaptersSelect.innerHTML = ''
-	// 		part.children.forEach(function(child, i) {
-	// 			var option = document.createElement('option')
-	// 			option.value = i
-	// 			option.innerHTML = child.index + ' - ' + child.title
-	// 			chaptersSelect.appendChild(option)
-	// 		})
-
-	// 		$(chaptersSelect).trigger('change')
-	// 	} else {
-	// 		editor.setValue(part.content)
-	// 	}
-	// })
-
-	// chaptersSelect.addEventListener('change', function(event) {
-	// 	var chapter = SELECTED_PART.children[chaptersSelect.value]
-	// 	SELECTED_CHAPTER = chapter
-	// 	rulesSelect.style.display = chapter.children ? 'block' : 'none'
-	// 	if (chapter.children) {
-	// 		rulesSelect.innerHTML = ''
-	// 		chapter.children.forEach(function(child, i) {
-	// 			var option = document.createElement('option')
-	// 			option.value = i
-	// 			option.innerHTML = child.index + ' - ' + child.title
-	// 			rulesSelect.appendChild(option)
-	// 		})
-
-	// 		$(rulesSelect).trigger('change')
-	// 	} else {
-	// 		editor.setValue(chapter.content)
-	// 	}
-	// })
-
-	// rulesSelect.addEventListener('change', function(event) {
-	// 	SELECTED_RULE = SELECTED_CHAPTER.children[rulesSelect.value]
-	// 	editor.updateOptions({value: SELECTED_RULE.content})
-	// })
 })
