@@ -26,6 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		selectPart(part || PARTS[0])
 	}
 
+	window.onbeforeunload = function() {
+		if (Object.keys(CHANGED_PARTS).length > 0) {
+			return "You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to leave the editor?"
+		}
+	}
+
 	var editor
 	function loadEditor() {
 		require.config({paths: {'vs': 'vs'}})
