@@ -31,12 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		require(['vs/editor/editor.main'], function() {
 			editor = monaco.editor.create(document.getElementById('editor'), EDITOR_CONFIG)
 
-			editor.onDidChangeModelContent(function() {
-				updatePreview()
-			})
+			editor.onDidChangeModelContent(debounce(updatePreview, 300))
 
-			var resize = debounce(editor.layout.bind(editor), 100)
-			window.addEventListener('resize', resize)
+			window.addEventListener('resize', debounce(editor.layout.bind(editor), 100))
 
 			if (PARTS) {
 				window.onhashchange()
