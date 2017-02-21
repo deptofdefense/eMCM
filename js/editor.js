@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	var selectedPart
 
 	loadEditor()
-	loadToc()
+	loadGitHub()
 
 	window.onhashchange = function() {
 		var href = location.hash
@@ -42,13 +42,52 @@ document.addEventListener('DOMContentLoaded', function() {
 		})
 	}
 
-	var toc
+	var GitHub
+	function loadGitHub() {
+		if (!localStorage.githubUsername || !localStorage.githubToken) {
+			localStorage.githubUsername = prompt("What's your GitHub username?") || ""
+			localStorage.githubToken = prompt("What's your GitHub Personal Access Token?") || ""
+		}
 
-	function loadToc() {
-		toc = document.getElementById('toc')
+		if (!localStorage.githubUsername || !localStorage.githubToken) {
+			return
+		}
 
-		fetch('toc.json', function(json) {
-			PARTS = JSON.parse(json)
+		require(['js/github'], function(gh) {
+			GitHub = new gh({
+				username: localStorage.githubUsername,
+				token: localStorage.githubToken,
+			})
+
+			var repo = GitHub.getRepo('deptofdefense', 'mcm')
+			repo.getContents('master', 'manual', false, function(err, contents) {
+				if (err) {
+					return alert(err)
+				}
+
+				forEach(contents, function(blob) {
+					if (blob.name === 'toc.json') {
+						var sha = blob.sha
+
+						repo.getBlob(sha, function(err, contents) {
+							if (err) {
+								return alert(err)
+							}
+
+							loadToc(contents)
+						})
+					}
+				})
+			})
+		})
+	}
+
+	var toc = document.getElementById('toc')
+
+	function loadToc(json) {
+		// fetch('toc.json', function(json) {
+			// PARTS = JSON.parse(json)
+			PARTS = json
 			KEYED_PARTS = arrayToHash(PARTS, 'children')
 
 			forEach(PARTS, function(part, i) {
@@ -58,22 +97,22 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (editor) {
 				window.onhashchange()
 			}
-		})
-
-		toc.addEventListener('click', function(event) {
-			var target = event.target
-			if (target.tagName !== 'A') {
-				return
-			}
-
-			var href = target.getAttribute('href')
-			if (href === '#') {
-				target.parentNode.classList.toggle('expanded')
-				event.stopPropagation()
-				event.preventDefault()
-			}
-		})
+		// })
 	}
+
+	toc.addEventListener('click', function(event) {
+		var target = event.target
+		if (target.tagName !== 'A') {
+			return
+		}
+
+		var href = target.getAttribute('href')
+		if (href === '#') {
+			target.parentNode.classList.toggle('expanded')
+			event.stopPropagation()
+			event.preventDefault()
+		}
+	})
 
 	var tocProto = document.getElementById('toc-proto')
 	toc.removeChild(tocProto)
