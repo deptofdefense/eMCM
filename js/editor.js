@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	loadEditor()
 	loadToc()
 
+	window.onhashchange = function() {
+		var href = location.hash
+		var part = KEYED_PARTS[href.substr(1)]
+		selectPart(part || PARTS[0])
+	}
+
 	var editor
 	function loadEditor() {
 		require.config({paths: {'vs': '/vs'}})
@@ -33,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			window.addEventListener('resize', resize)
 
 			if (PARTS) {
-				selectPart(PARTS[0])
+				window.onhashchange()
 			}
 		})
 	}
@@ -52,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			})
 
 			if (editor) {
-				selectPart(PARTS[0])
+				window.onhashchange()
 			}
 		})
 
@@ -67,8 +73,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				target.parentNode.classList.toggle('expanded')
 				event.stopPropagation()
 				event.preventDefault()
-			} else if (href.length > 1) {
-				selectPart(KEYED_PARTS[href.substr(1)])
 			}
 		})
 	}
