@@ -108,7 +108,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	function selectPart(part) {
 		if (selectedPart) {
-			selectedPart.newValue = editor.getValue()
+			if (!IS_REVIEWING) {
+				selectedPart.newValue = editor.getValue()
+			}
+
 			selectedPart.navItem.classList.remove('selected')
 		}
 
@@ -127,6 +130,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			} else {
 				editor.setValue(selectedPart.newValue || selectedPart.content)
 				editor.layout()
+			}
+
+			if (location.hash !== '#' + selectedPart.id) {
+				location.hash = '#' + selectedPart.id
 			}
 		}
 	}
@@ -185,7 +192,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		Object.forEach(KEYED_PARTS, function(key, part) {
 			if (CHANGED_PARTS[key] && part.newValue && part.newValue !== part.content) {
 				if (!first) { first = part }
-				reviewToc.appendChild(part.navItem.cloneNode(true))
+				var newNavItem = part.navItem.cloneNode(true)
+				part.oldNavItem = part.navItem
+				part.navItem = newNavItem
+				reviewToc.appendChild(newNavItem)
 			}
 		})
 
@@ -197,6 +207,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	})
 
 	cancelReviewChanges.addEventListener('click', function() {
+		Object.forEach(CHANGED_PARTS, function(key, part) {
+			if (part.oldNavItem) {
+				part.navItem = part.oldNavItem
+				part.oldNavItem = null
+			}
+		})
+
 		reviewToc.innerHTML = ''
 		toc.style.display = 'block'
 
