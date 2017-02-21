@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 
 				forEach(contents, function(blob) {
-					if (blob.name === 'toc.json') {
+					if (blob.name === 'toc.910fec1.json') {
 						var sha = blob.sha
 
 						REPO.getBlob(sha, function(err, contents) {
