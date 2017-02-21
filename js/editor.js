@@ -115,7 +115,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	var previewFrame = document.getElementById('preview')
 	function updatePreview() {
 		var body = previewFrame.contentWindow.document.getElementById('content')
-		body.innerHTML = contentize(editor.getValue())
+		body.innerHTML = headerForSection(selectedPart)
+		body.innerHTML += contentize(editor.getValue())
 		fixListElements(body)
 	}
 })
