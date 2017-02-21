@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	var editor
 	function loadEditor() {
-		require.config({paths: {'vs': '/vs'}})
+		require.config({paths: {'vs': 'vs'}})
 		require(['vs/editor/editor.main'], function() {
 			editor = monaco.editor.create(document.getElementById('editor'), EDITOR_CONFIG)
 
