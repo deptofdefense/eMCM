@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		})
 	}
 
-	var GitHub
+	var GitHub, REPO
 	function loadGitHub() {
 		if (!localStorage.githubUsername || !localStorage.githubToken) {
 			localStorage.githubUsername = prompt("What's your GitHub username?") || ""
@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				token: localStorage.githubToken,
 			})
 
-			var repo = GitHub.getRepo('deptofdefense', 'mcm')
-			repo.getContents('master', 'manual', false, function(err, contents) {
+			REPO = GitHub.getRepo('deptofdefense', 'mcm')
+			REPO.getContents('master', 'manual', false, function(err, contents) {
 				if (err) {
 					return alert(err)
 				}
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					if (blob.name === 'toc.json') {
 						var sha = blob.sha
 
-						repo.getBlob(sha, function(err, contents) {
+						REPO.getBlob(sha, function(err, contents) {
 							if (err) {
 								return alert(err)
 							}
@@ -186,7 +186,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function onChange() {
-		console.log('did change')
 		var id = selectedPart.id
 		if (!CHANGED_PARTS[id]) {
 			CHANGED_PARTS[id] = selectedPart
@@ -266,6 +265,38 @@ document.addEventListener('DOMContentLoaded', function() {
 		IS_REVIEWING = false
 
 		selectPart(selectedPart)
+	})
+
+	var saveChanges = document.getElementById('save-draft-button')
+	saveChanges.addEventListener('click', function() {
+		var branchName = prompt("What should this branch be called?")
+		REPO.createBranch('master', branchName, function(err, branch) {
+			if (err) {
+				return alert(err)
+			}
+
+			var tree = []
+			Object.forEach(CHANGED_PARTS, function(key, part) {
+				tree.push({
+					mode: '100644',
+					path: 'manual/' + part.path,
+					type: 'blob',
+					content: part.newValue
+				})
+			})
+
+			REPO.createTree(tree, branch.ref, function(err, tree) {
+				if (err) {
+					return alert(err)
+				}
+
+				REPO.commit(branch.object.sha, tree.sha, "Editor commit", function(err, commit) {
+					REPO.updateHead(branch.ref.substr(5), commit.sha, false, function(err, head) {
+						window.open('https://github.com/deptofdefense/mcm/compare/' + branchName)
+					})
+				})
+			})
+		})
 	})
 
 	function resize() {
