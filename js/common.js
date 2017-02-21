@@ -280,3 +280,11 @@ function debounce(func, delay) {
 		timeout = setTimeout(func, delay)
 	}
 }
+
+Object.forEach = function(object, func) {
+	for (var key in object) {
+		if (object.hasOwnProperty(key)) {
+			func(key, object[key])
+		}
+	}
+}

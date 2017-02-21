@@ -104,12 +104,15 @@
 			margin-right: -20px;
 		}
 
+		.diff {
+			width: 83%;
+		}
+
 		.bottom-bar {
 			position: absolute;
 			bottom: 0;
 			left: 0;
 			right: 0;
-			height: 32px;
 			text-align: center;
 		}
 
@@ -128,10 +131,20 @@
 					</li>
 				</ul>
 
+				<ul id="review-toc">
+				</ul>
+
 				<div class="bottom-bar">
-					<!-- <button title="New file">+</button> -->
-					<!-- <button title="Delete file">-</button> -->
-					<button id="review-button" title="Review changes">Review changes</button>
+					<div id="edit-mode-buttons">
+						<!-- <button title="New file">+</button> -->
+						<!-- <button title="Delete file">-</button> -->
+						<button id="review-button" title="Review changes">Review changes</button>
+					</div>
+
+					<div id="review-mode-buttons">
+						<button id="save-draft-button" title="Save draft">Save draft</button>
+						<button id="cancel-review-button" title="Back to editor">Back to editor</button>
+					</div>
 				</div>
 			</div>
 
@@ -141,6 +154,9 @@
 			<div class="col preview">
 				<iframe id="preview" src="preview.html">
 				</iframe>
+			</div>
+
+			<div class="col diff" id="diff">
 			</div>
 		</div>
 
