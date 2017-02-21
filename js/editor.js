@@ -50,23 +50,47 @@ document.addEventListener('DOMContentLoaded', function() {
 				selectPart(PARTS[0])
 			}
 		})
+
+		document.body.addEventListener('click', function(event) {
+			var target = event.target
+			while (target !== document.body) {
+				if (target.classList.contains('has-children')) {
+					target.classList.toggle('expanded')
+					event.stopPropagation()
+					event.preventDefault()
+					return
+				}
+
+				target = target.parentNode
+			}
+		})
 	}
 
 	var toc = document.getElementById('toc')
 	var tocProto = document.getElementById('toc-proto')
 	toc.removeChild(tocProto)
 
-	function makeTocItem(part, i) {
+	function makeTocItem(part, i, parent) {
+		if (!parent) {
+			parent = toc
+		}
+
+		var li = tocProto.cloneNode(true)
+		li.removeAttribute('id')
+		var a = li.querySelector('a')
+		a.innerHTML = titleForSection(part)
+		a.href = idForChain([a.title])
+		parent.appendChild(li)
+
 		if (part.children) {
+			li.classList.add('has-children')
+
+			var ul = document.createElement('ul')
+			li.appendChild(ul)
+
 			forEach(part.children, function (child, i) {
-				makeTocItem(child, i)
+				makeTocItem(child, i, ul)
 			})
-		} else {
-			var li = tocProto.cloneNode(true)
-			var a = li.querySelector('a')
-			a.innerHTML = part.title
-			a.href = idForChain([a.title])
-			toc.appendChild(li)
 		}
 	}
 

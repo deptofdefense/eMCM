@@ -24,21 +24,53 @@
 		.nav {
 			width: 16%;
 			overflow: scroll;
+			font-size: 0.7rem;
+			line-height: 2;
+			background: #e6e6e6;
 		}
 
 		.nav ul {
 			list-style: none;
-			padding: 12px;
 			margin: 0;
+			padding: 0;
 			width: 100%;
-			background: #e6e6e6;
+		}
+
+		.nav > ul {
+			padding: 12px;
+		}
+
+		.nav li {
+			margin-left: 0.7rem;
+		}
+
+		.nav li.has-children > a {
+			font-weight: bold;
+			margin-left: 0;
+		}
+
+		.nav li.has-children > ul {
+			display: none;
+		}
+
+		.nav li.expanded > ul {
+			display: block;
+		}
+
+		.nav li.has-children::before {
+			content: '\25B8';
+			font-family: monospace;
+			font-size: 1rem;
+			cursor: pointer;
+		}
+
+		.nav li.expanded::before {
+			content: '\25BE';
 		}
 
 		.nav li a {
 			color: #000;
 			text-decoration: none;
-			font-weight: bold;
-			font-size: 0.6rem;
 		}
 
 		.editor {
