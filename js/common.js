@@ -48,7 +48,7 @@ function titleForSection(section) {
 var currentAnchorType
 function headerForSection(section) {
 	var result
-	var id = parseInt(section.index)
+	var id = section.index
 	if (section.type === 'part') {
 		result = "<h1>"
 		if (id) result += "PART " + romanize(id) + "<br>"
