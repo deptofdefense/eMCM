@@ -1,5 +1,4 @@
 # eMCM
-## Military Court-martial Manual browser
-## made by Jesse Schweig MAJ USMC
+## Viewer for the Manual for Courts-Martial United States.
 
-Stub
+You can view the MCM at https://mcm.mil. You can get more information about the MCM at http://jsc.defense.gov/Military-Law/Current-Publications-and-Updates.
