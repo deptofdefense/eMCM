@@ -1,3 +1,23 @@
+/*
+This software project was created in 2017 by the U.S. Federal government.
+See INTENT.md for information about what that means. See CONTRIBUTORS.md and
+LICENSE.md for licensing, copyright, and attribution information.
+
+Copyright (C) 2017 <Contributor Names>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 $(function() {
 	var navItemProto = document.querySelector('[data-nav-proto]')
 	var subNavProto = document.querySelector('[data-subnav-proto]')
