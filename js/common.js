@@ -3,7 +3,7 @@ This software project was created in 2017 by the U.S. Federal government.
 See INTENT.md for information about what that means. See CONTRIBUTORS.md and
 LICENSE.md for licensing, copyright, and attribution information.
 
-Copyright (C) 2017 <Contributor Name>
+Copyright (C) 2017 <Contributor Names>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
