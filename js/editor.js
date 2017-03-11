@@ -248,6 +248,33 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (first) {
 			selectPart(first)
 		}
+		var formData = new FormData()
+		formData.append('out', 'text')
+		formData.append('content',
+			'<!DOCTYPE html><html><head><title>Validation</title></head><body>'
+			+ previewFrame.contentWindow.document.getElementById('content').innerHTML
+				.replace(/<(\/?)rule(.*?)>/g,'<$1div>')
+				.replace(/<(\/?)discussion/g,'<$1aside')
+				.replace(/<(\/?)article(.*?)/g,'<$1aside>')
+			+ '</body></html>')
+		var xhr = new XMLHttpRequest()
+		xhr.open('POST', 'https://html5.validator.nu')
+		setTimeout(function(){xhr.send(formData)},0)
+		xhr.onreadystatechange = function () {
+			var DONE = 4; // readyState 4 means the request is done.
+			var OK = 200; // status 200 is a successful return.
+			if (xhr.readyState === DONE) {
+				if (xhr.status === OK) {
+					var response = xhr.responseText
+					if(!response.startsWith("The document is valid")){
+						console.log(response)
+						alert(xhr.responseText)
+					}
+				} else {
+					alert('Error: ' + xhr.status)
+				}
+			}
+		};
 	})
 
 	cancelReviewChanges.addEventListener('click', function() {
