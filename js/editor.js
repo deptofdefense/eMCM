@@ -256,6 +256,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				.replace(/<(\/?)rule(.*?)>/g,'<$1div>')
 				.replace(/<(\/?)discussion/g,'<$1aside')
 				.replace(/<(\/?)article(.*?)/g,'<$1aside>')
+				.replace(/<(\/?)section(.*?)/g,'<$1div>')
 			+ '</body></html>')
 		var xhr = new XMLHttpRequest()
 		xhr.open('POST', 'https://html5.validator.nu')
