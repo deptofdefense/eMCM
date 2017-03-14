@@ -241,7 +241,13 @@ $(function() {
 			content = cachedContent
 			cachedContent = null
 		} else if (query) {
-			var results = searchIndex.search(query).sort().map(function(result) { return MCMflat[result.ref] })
+			var results = searchIndex.search(query)
+				.filter(function(result){
+					var a = document.createElement('div');
+					a.innerHTML = MCMflat[result.ref].content
+					return a.textContent.search(query) > 0
+				})
+				.sort().map(function(result) { return MCMflat[result.ref] })
 			var hrefs = results.map(function(result) { return '#' + result._id })
 		}
 
