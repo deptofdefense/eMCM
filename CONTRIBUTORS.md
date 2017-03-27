@@ -7,7 +7,7 @@ Copyright <Year> <Copyright Holder Name>
 ```
 <Year> <Federal Government Employee Name>
 ````
-
+____
 Copyright 2017 U.S. Federal Government (in countries where recognized)
 
 2017 Nick Small
