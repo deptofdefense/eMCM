@@ -36,7 +36,7 @@ $(function() {
 	})
 	window.searchIndex = searchIndex
 
-	fetch('toc.910fec1.json', function(json) {
+	fetch('toc.c7619ba.json', function(json) {
 		window.MCM = JSON.parse(json)
 		window.MCMflat = flattenArray(MCM, 'children')
 
