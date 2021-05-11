@@ -158,6 +158,7 @@ function fixListElements(el) {
 	forEach(lists, function(list) {
 		forEach(list.children, function(li) {
 			var index = li.getAttribute('index')
+			li.removeAttribute('index')
 			if (li.nodeName.toUpperCase() === 'LI' && index) {
 				if (!list.type) {
 					for (var listType in LIST_TYPES) {
